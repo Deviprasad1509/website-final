@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { BookOpen, ArrowRight } from "lucide-react"
@@ -51,7 +51,7 @@ export default function CategoriesPage() {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const { data: books, error } = await db.getEbooks({ limit: 1000 })
+        const { data: books, error } = await db.getBooks({ limit: 1000 })
         
         if (error) {
           console.error('Error loading books for categories:', error)
@@ -62,7 +62,7 @@ export default function CategoriesPage() {
         if (books) {
           // Count books per category
           const categoryCount: { [key: string]: number } = {}
-          books.forEach(book => {
+          books.forEach((book: any) => {
             const category = book.category.toLowerCase()
             categoryCount[category] = (categoryCount[category] || 0) + 1
           })
@@ -71,7 +71,7 @@ export default function CategoriesPage() {
           const categoriesData: CategoryData[] = Object.entries(categoryCount).map(([name, count], index) => ({
             name: name.charAt(0).toUpperCase() + name.slice(1),
             count,
-            description: CATEGORY_DESCRIPTIONS[name] || "Discover amazing books in this category",
+            description: (CATEGORY_DESCRIPTIONS as any)[name] || "Discover amazing books in this category",
             color: CATEGORY_COLORS[index % CATEGORY_COLORS.length]
           }))
 

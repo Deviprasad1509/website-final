@@ -13,14 +13,6 @@ function getServerSupabase() {
 			autoRefreshToken: false,
 			detectSessionInUrl: false,
 		},
-		cookies: {
-			get: (key: string) => cookies().get(key)?.value,
-			set: () => {},
-			remove: () => {},
-		},
-		headers: {
-			get: (key: string) => headers().get(key) ?? undefined,
-		},
 	})
 }
 

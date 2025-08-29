@@ -1,5 +1,5 @@
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
 
 export const metadata = {
   title: "Privacy Policy - SR Enterprises",
@@ -140,7 +140,7 @@ export default function PrivacyPolicyPage() {
               If you have any questions about this Privacy Policy or our privacy practices, please contact us:
             </p>
             <div className="text-muted-foreground">
-              <p>Email: support@buisbuz.com</p>
+              <p>Email: support@bookstore.com</p>
               <p>For privacy-related inquiries, please contact us via email.</p>
             </div>
           </section>

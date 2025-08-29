@@ -47,9 +47,19 @@ export default function LoginForm() {
         await router.refresh() // Refresh to update auth state
         await router.replace(redirectTo)
       }
-    } catch (err) {
-      setError('An unexpected error occurred. Please try again.')
+    } catch (err: any) {
       console.error('Sign in error:', err)
+
+      // Handle specific error types
+      if (err.message?.includes('NetworkError') || err.message?.includes('Failed to fetch')) {
+        setError('Network connection error. Please check your internet connection and try again.')
+      } else if (err.message?.includes('Invalid login credentials')) {
+        setError('Invalid email or password. Please check your credentials and try again.')
+      } else if (err.message?.includes('Email not confirmed')) {
+        setError('Please check your email and click the confirmation link before signing in.')
+      } else {
+        setError(err.message || 'An unexpected error occurred. Please try again.')
+      }
     } finally {
       setIsLoading(false)
     }

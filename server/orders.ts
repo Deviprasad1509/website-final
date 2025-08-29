@@ -71,7 +71,7 @@ export async function markOrderCompleted(orderId: string): Promise<void> {
 	await setOrderStatus(orderId, 'completed')
 	
 	// Add books to library
-	const libraryEntries = order.order_items.map(item => ({
+	const libraryEntries = order.order_items.map((item: any) => ({
 		user_id: order.user_id,
 		book_id: item.book_id
 	}))

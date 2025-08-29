@@ -1,5 +1,5 @@
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 
@@ -22,7 +22,7 @@ export default function TermsPage() {
               <section>
                 <h2 className="text-2xl font-semibold mb-4">1. Acceptance of Terms</h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  By accessing and using BuisBuz ("we", "our", "us"), you accept and agree to be bound by the terms and provision of this agreement. 
+                  By accessing and using BookStore ("we", "our", "us"), you accept and agree to be bound by the terms and provision of this agreement.
                   If you do not agree to abide by the above, please do not use this service.
                 </p>
               </section>
@@ -32,7 +32,7 @@ export default function TermsPage() {
               <section>
                 <h2 className="text-2xl font-semibold mb-4">2. Use License</h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  Permission is granted to temporarily download one copy of the materials on BuisBuz's website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:
+                  Permission is granted to temporarily download one copy of the materials on BookStore's website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:
                 </p>
                 <ul className="list-disc pl-6 text-muted-foreground space-y-2">
                   <li>modify or copy the materials</li>
@@ -41,7 +41,7 @@ export default function TermsPage() {
                   <li>remove any copyright or other proprietary notations from the materials</li>
                 </ul>
                 <p className="text-muted-foreground leading-relaxed mt-4">
-                  This license shall automatically terminate if you violate any of these restrictions and may be terminated by BuisBuz at any time.
+                  This license shall automatically terminate if you violate any of these restrictions and may be terminated by BookStore at any time.
                 </p>
               </section>
 
@@ -57,7 +57,7 @@ export default function TermsPage() {
                   <li>You may download purchased content up to 3 times unless specified otherwise</li>
                   <li>Free books may be downloaded unlimited times</li>
                   <li>Sharing, distributing, or reselling digital content is strictly prohibited</li>
-                  <li>BuisBuz reserves the right to remove content from your library in cases of copyright violation</li>
+                  <li>BookStore reserves the right to remove content from your library in cases of copyright violation</li>
                 </ul>
               </section>
 
@@ -85,7 +85,7 @@ export default function TermsPage() {
                 <ul className="list-disc pl-6 text-muted-foreground space-y-2">
                   <li>No refunds will be issued once access is granted or a download has begun</li>
                   <li>Duplicate charges will be reviewed and, if verified, credited</li>
-                  <li>Technical issues will be supported via email at support@buisbuz.com</li>
+                  <li>Technical issues will be supported via email at support@bookstore.com</li>
                 </ul>
               </section>
 
@@ -120,7 +120,7 @@ export default function TermsPage() {
               <section>
                 <h2 className="text-2xl font-semibold mb-4">8. Disclaimer</h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  The materials on BuisBuz's website are provided on an 'as is' basis. BuisBuz makes no warranties, expressed or implied, 
+                  The materials on BookStore's website are provided on an 'as is' basis. BookStore makes no warranties, expressed or implied,
                   and hereby disclaims and negates all other warranties including without limitation, implied warranties or conditions of merchantability, 
                   fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
                 </p>
@@ -131,9 +131,9 @@ export default function TermsPage() {
               <section>
                 <h2 className="text-2xl font-semibold mb-4">9. Limitations</h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  In no event shall BuisBuz or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, 
+                  In no event shall BookStore or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit,
                   or due to business interruption) arising out of the use or inability to use the materials on BuisBuz's website, 
-                  even if BuisBuz or a BuisBuz authorized representative has been notified orally or in writing of the possibility of such damage.
+                  even if BookStore or a BookStore authorized representative has been notified orally or in writing of the possibility of such damage.
                 </p>
               </section>
 
@@ -146,7 +146,7 @@ export default function TermsPage() {
                 </p>
                 <div className="mt-4 p-4 bg-muted rounded-lg">
                   <p className="font-medium">Email:</p>
-                  <p className="text-muted-foreground">support@buisbuz.com</p>
+                  <p className="text-muted-foreground">support@bookstore.com</p>
                 </div>
               </section>
 

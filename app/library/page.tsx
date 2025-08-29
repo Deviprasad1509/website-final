@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -14,7 +14,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useAuth } from "@/lib/auth-context"
 import { db } from "@/lib/database.service"
-import { toast } from "@/hooks/use-toast"
+import { toast } from "sonner"
 
 interface LibraryBook {
   id: string
@@ -124,10 +124,8 @@ export default function LibraryPage() {
 
   const handleDownload = async (book: LibraryBook) => {
     if (!book.pdf_url) {
-      toast({
-        title: "PDF Not Available",
+      toast.error("PDF Not Available", {
         description: "This book doesn't have a PDF file available for download.",
-        variant: "destructive",
       })
       return
     }
@@ -141,16 +139,13 @@ export default function LibraryPage() {
       link.click()
       document.body.removeChild(link)
 
-      toast({
-        title: "Download Started",
+      toast.success("Download Started", {
         description: `Downloading "${book.title}"...`,
       })
     } catch (err) {
       console.error('Error downloading book:', err)
-      toast({
-        title: "Download Failed",
+      toast.error("Download Failed", {
         description: "Failed to download the book. Please try again.",
-        variant: "destructive",
       })
     }
   }
@@ -164,7 +159,7 @@ export default function LibraryPage() {
   }
 
   const getUniqueCategories = () => {
-    const categories = [...new Set(library.map(book => book.category))]
+    const categories = Array.from(new Set(library.map(book => book.category)))
     return categories.sort()
   }
 

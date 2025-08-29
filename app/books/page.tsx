@@ -20,7 +20,7 @@ export async function generateStaticParams() {
   }))
 
   // Add default path
-  staticPaths.push({ searchParams: {} })
+  staticPaths.push({ searchParams: { category: undefined } })
   
   return staticPaths
 }

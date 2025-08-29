@@ -1,7 +1,7 @@
 "use client"
 import CheckoutForm from "@/components/checkout-form"
 import { OrderSummary } from "@/components/order-summary"
-import { Header } from "@/components/header"
+import Header from "@/components/header"
 
 export default function CheckoutPage() {
 	// Mock data for now - this would come from cart context in a real app

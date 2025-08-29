@@ -192,7 +192,7 @@ export default function AdminSettingsPage() {
                   <Switch
                     id="maintenance"
                     checked={settings.store.maintenance}
-                    onCheckedChange={(checked) => handleSettingChange('store', 'maintenance', checked)}
+                    onChange={(e) => handleSettingChange('store', 'maintenance', e.target.checked)}
                   />
                 </div>
               </CardContent>
@@ -217,7 +217,7 @@ export default function AdminSettingsPage() {
                     <Switch
                       id="stripeEnabled"
                       checked={settings.payments.stripeEnabled}
-                      onCheckedChange={(checked) => handleSettingChange('payments', 'stripeEnabled', checked)}
+                      onChange={(e) => handleSettingChange('payments', 'stripeEnabled', e.target.checked)}
                     />
                   </div>
                   <div className="flex items-center justify-between">
@@ -228,7 +228,7 @@ export default function AdminSettingsPage() {
                     <Switch
                       id="razorpayEnabled"
                       checked={settings.payments.razorpayEnabled}
-                      onCheckedChange={(checked) => handleSettingChange('payments', 'razorpayEnabled', checked)}
+                      onChange={(e) => handleSettingChange('payments', 'razorpayEnabled', e.target.checked)}
                     />
                   </div>
                   <Separator />
@@ -240,7 +240,7 @@ export default function AdminSettingsPage() {
                     <Switch
                       id="testMode"
                       checked={settings.payments.testMode}
-                      onCheckedChange={(checked) => handleSettingChange('payments', 'testMode', checked)}
+                      onChange={(e) => handleSettingChange('payments', 'testMode', e.target.checked)}
                     />
                   </div>
                 </div>
@@ -314,7 +314,7 @@ export default function AdminSettingsPage() {
                     <Switch
                       id="requireEmailVerification"
                       checked={settings.security.requireEmailVerification}
-                      onCheckedChange={(checked) => handleSettingChange('security', 'requireEmailVerification', checked)}
+                      onChange={(e) => handleSettingChange('security', 'requireEmailVerification', e.target.checked)}
                     />
                   </div>
                   <div className="flex items-center justify-between">
@@ -325,7 +325,7 @@ export default function AdminSettingsPage() {
                     <Switch
                       id="requirePhoneVerification"
                       checked={settings.security.requirePhoneVerification}
-                      onCheckedChange={(checked) => handleSettingChange('security', 'requirePhoneVerification', checked)}
+                      onChange={(e) => handleSettingChange('security', 'requirePhoneVerification', e.target.checked)}
                     />
                   </div>
                   <Separator />

@@ -1,5 +1,5 @@
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
 
 export const metadata = {
   title: "Returns Policy - SR Enterprises",
@@ -62,7 +62,7 @@ export default function ReturnsPage() {
                 <div>
                   <h3 className="font-semibold text-foreground">Contact Support</h3>
                   <p className="text-muted-foreground">
-                    Email us at <a href="mailto:support@buisbuz.com" className="text-primary hover:underline">support@buisbuz.com</a> with "Refund Request" in the subject line.
+                    Email us at <a href="mailto:support@bookstore.com" className="text-primary hover:underline">support@bookstore.com</a> with "Refund Request" in the subject line.
                   </p>
                 </div>
               </div>
@@ -183,7 +183,7 @@ export default function ReturnsPage() {
             </p>
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
               <div className="space-y-2">
-                <p className="text-foreground"><strong>Email:</strong> support@buisbuz.com</p>
+                <p className="text-foreground"><strong>Email:</strong> support@bookstore.com</p>
                 <p className="text-foreground"><strong>Phone:</strong> +1 (555) 123-4567</p>
                 <p className="text-foreground"><strong>Hours:</strong> Monday - Friday, 9 AM - 6 PM EST</p>
                 <p className="text-foreground"><strong>Response Time:</strong> Within 24 hours on business days</p>

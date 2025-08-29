@@ -29,7 +29,7 @@ export default function AuthorsPage() {
   useEffect(() => {
     const loadAuthors = async () => {
       try {
-        const { data: books, error } = await db.getEbooks({ limit: 1000 })
+        const { data: books, error } = await db.getBooks({ limit: 1000 })
         
         if (error) {
           console.error('Error loading books for authors:', error)
@@ -50,7 +50,7 @@ export default function AuthorsPage() {
 
           // Create author data
           const authorsData: AuthorData[] = Object.entries(authorMap).map(([name, authorBooks]) => {
-            const categories = [...new Set(authorBooks.map(book => book.category))]
+            const categories = Array.from(new Set(authorBooks.map(book => book.category)))
             return {
               name,
               bookCount: authorBooks.length,

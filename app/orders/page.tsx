@@ -4,7 +4,7 @@ export const dynamic = 'force-static'
 
 import { useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Header } from "@/components/header"
+import Header from "@/components/header"
 import { OrderHistory } from "@/components/order-history"
 import { OrderDetail } from "@/components/order-detail"
 import { useAuth } from "@/lib/auth-context"
