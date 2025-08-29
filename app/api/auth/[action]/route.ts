@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { signIn, signOut, signUp } from '@/lib/server-functions'
 
-const signupSchema = z.object({ email: z.string().email(), password: z.string().min(6), name: z.string().min(1) })
-const signinSchema = z.object({ email: z.string().email(), password: z.string().min(6) })
+const signupSchema = z.object({ email: z.string().email(), password: z.string().min(8), name: z.string().min(1) })
+const signinSchema = z.object({ email: z.string().email(), password: z.string().min(8) })
 
 export async function POST(req: Request, { params }: { params: { action: string } }) {
 	try {

@@ -14,3 +14,4 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     </div>
   )
 }
+

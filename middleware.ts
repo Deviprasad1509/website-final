@@ -16,9 +16,6 @@ export async function middleware(request: NextRequest) {
   const {
     data: { session },
   } = await supabase.auth.getSession()
-  
-  // DEBUG: Log session and pathname
-  console.log('[MIDDLEWARE DEBUG]', { pathname, session })
 
   // Handle public routes
   if (PUBLIC_ROUTES.some(route => pathname.startsWith(route))) {

@@ -6,8 +6,8 @@ import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
@@ -28,7 +28,7 @@ function BookByQueryInner() {
   const [userOwnsBook, setUserOwnsBook] = useState(false)
   const [checkingOwnership, setCheckingOwnership] = useState(false)
 
-  const { dispatch } = useCart()
+  const cart = useCart()
   const { state: authState } = useAuth()
 
   useEffect(() => {
@@ -82,9 +82,11 @@ function BookByQueryInner() {
 
   const handleAddToCart = () => {
     if (book) {
-      dispatch({
-        type: "ADD_ITEM",
-        payload: { id: book.id, title: book.title, author: book.author, price: book.price, cover: book.cover },
+      cart.addItem({
+        book_id: book.id,
+        qty: 1,
+        unit_price: book.price,
+        books: { title: book.title, cover_url: book.cover }
       })
     }
   }
@@ -152,9 +154,9 @@ function BookByQueryInner() {
               {book.is_featured && (<Badge className="absolute top-4 left-4 bg-yellow-500">Featured</Badge>)}
             </div>
             <div className="flex space-x-2 max-w-md mx-auto">
-              <Button variant="outline" size="icon" className="bg-transparent"><Heart className="h-4 w-4" /></Button>
-              <Button variant="outline" size="icon" className="bg-transparent"><Share className="h-4 w-4" /></Button>
-              <Button variant="outline" size="icon" className="bg-transparent"><Eye className="h-4 w-4" /></Button>
+              <Button variant="outline" className="bg-transparent p-2"><Heart className="h-4 w-4" /></Button>
+              <Button variant="outline" className="bg-transparent p-2"><Share className="h-4 w-4" /></Button>
+              <Button variant="outline" className="bg-transparent p-2"><Eye className="h-4 w-4" /></Button>
             </div>
           </div>
 
@@ -231,6 +233,7 @@ export default function BookByQueryPage() {
     </Suspense>
   )
 }
+
 
 
 

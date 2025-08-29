@@ -1,5 +1,5 @@
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { BookOpen, Users, Award, Globe, Heart, Shield, Zap, Star } from "lucide-react"
@@ -66,7 +66,7 @@ export default function AboutPage() {
         <section className="bg-muted py-16 lg:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-6">
-              About <span className="text-primary">BuisBuz</span>
+              About <span className="text-primary">BookStore</span>
             </h1>
             <p className="text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
               Your premium destination for discovering, purchasing, and enjoying high-quality ebooks. 
@@ -84,9 +84,9 @@ export default function AboutPage() {
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-3xl font-bold text-foreground mb-6">Our Mission</h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                At BuisBuz, we're on a mission to revolutionize the way people discover and consume digital literature. 
-                We believe that great books have the power to change lives, spark conversations, and build bridges between 
-                cultures and communities. Our platform is designed to make finding your next great read as simple and 
+                At BookStore, we're on a mission to revolutionize the way people discover and consume digital literature.
+                We believe that great books have the power to change lives, spark conversations, and build bridges between
+                cultures and communities. Our platform is designed to make finding your next great read as simple and
                 enjoyable as possible.
               </p>
             </div>
@@ -97,7 +97,7 @@ export default function AboutPage() {
         <section className="py-16 bg-muted/50">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-foreground mb-4">Why Choose BuisBuz?</h2>
+              <h2 className="text-3xl font-bold text-foreground mb-4">Why Choose BookStore?</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
                 We're not just another bookstore. Here's what makes us different.
               </p>
@@ -184,7 +184,7 @@ export default function AboutPage() {
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-foreground mb-4">How It Works</h2>
               <p className="text-muted-foreground">
-                Getting started with BuisBuz is simple
+                Getting started with BookStore is simple
               </p>
             </div>
             
@@ -236,7 +236,7 @@ export default function AboutPage() {
               Ready to Start Your Reading Journey?
             </h2>
             <p className="text-lg opacity-90 mb-8 max-w-2xl mx-auto">
-              Join thousands of readers who have discovered their next favorite book with BuisBuz. 
+              Join thousands of readers who have discovered their next favorite book with BookStore.
               Start exploring our collection today!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -260,3 +260,4 @@ export default function AboutPage() {
     </div>
   )
 }
+

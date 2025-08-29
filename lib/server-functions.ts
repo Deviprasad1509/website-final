@@ -29,11 +29,22 @@ export async function listBooks(params: Partial<z.infer<typeof paginationQuerySc
 		query = query.gt('id', cursor)
 	}
 	if (sort) {
-		const ascending = !sort.startsWith('-')
-		const col = ascending ? sort : sort.slice(1)
-		// @ts-ignore supabase-js typing for order
-		query = query.order(col, { ascending })
-	} else {
+		switch (sort) {
+			case 'price-asc':
+				query = query.order('price', { ascending: true })
+				break
+			case 'price-desc':
+				query = query.order('price', { ascending: false })
+				break
+			case 'title-asc':
+				query = query.order('title', { ascending: true })
+				break
+			case 'latest':
+				query = query.order('created_at', { ascending: false })
+				break
+			default:
+				query = query.order('created_at', { ascending: false })
+		}
 		// @ts-ignore
 		query = query.order('created_at', { ascending: false })
 	}
@@ -84,9 +95,15 @@ export async function getSessionUser(): Promise<UserProfile | null> {
 		const { data } = await supabaseAdmin.auth.getUser()
 		const authUser = data.user
 		if (!authUser) return null
-		const { data: profile } = await supabaseAdmin.from('users').select('*').eq('id', authUser.id).single()
+		const { data: profile } = await supabaseAdmin.from('profiles').select('*').eq('id', authUser.id).single()
 		if (!profile) return null
-		return userProfileSchema.parse(profile)
+		// Combine profile with auth user data
+		const userProfile = {
+			...profile,
+			email: authUser.email,
+			name: authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'User'
+		}
+		return userProfileSchema.parse(userProfile)
 	} catch (error) {
 		return null
 	}
@@ -105,11 +122,19 @@ export async function requireAdmin(): Promise<UserProfile> {
 }
 
 export async function signUp(email: string, password: string, name: string) {
-	const { data: authData, error } = await supabaseAdmin.auth.signUp({ email, password })
+	const { data: authData, error } = await supabaseAdmin.auth.signUp({
+		email,
+		password,
+		options: { data: { name } }
+	})
 	if (error) throw error
 	const authUser = authData.user
 	if (!authUser) throw new Error('Signup failed')
-	await supabaseAdmin.from('users').upsert({ id: authUser.id, email, name, role: 'user' })
+	// Profile will be created by the trigger, but we can ensure it exists
+	await supabaseAdmin.from('profiles').upsert({
+		id: authUser.id,
+		role: 'user'
+	}, { onConflict: 'id' })
 	return { userId: authUser.id }
 }
 
@@ -185,7 +210,7 @@ export async function deleteAuthor(id: string) {
 
 // Reviews
 export async function listReviewsByBook(bookId: string): Promise<Review[]> {
-	const { data, error } = await supabaseAdmin.from('reviews').select('*, users(name)').eq('book_id', bookId).order('created_at', { ascending: false })
+	const { data, error } = await supabaseAdmin.from('reviews').select('*').eq('book_id', bookId).order('created_at', { ascending: false })
 	if (error) throw error
 	return (data ?? []).map(r => reviewSchema.parse(r))
 }

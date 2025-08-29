@@ -2,7 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import { AuthProvider } from "@/components/auth/AuthProvider";
+import { AuthProvider } from "@/components/auth-provider";
 import { Roboto } from "next/font/google";
 import { SupabaseProvider } from "@/lib/supabase/provider";
 
@@ -13,7 +13,7 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "BuisBuz Premium Book Store",
+  title: "BookStore Premium Book Store",
   description: "Discover your next great read with SR ENTERPRISES",
 };
 

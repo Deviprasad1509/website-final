@@ -13,11 +13,23 @@ interface BooksPageProps {
 	}
 }
 
+export async function generateStaticParams() {
+  const categories = await getCategories()
+  const staticPaths = categories.map(category => ({
+    searchParams: { category: category.id }
+  }))
+
+  // Add default path
+  staticPaths.push({ searchParams: {} })
+  
+  return staticPaths
+}
+
 export default async function BooksPage({ searchParams }: BooksPageProps) {
-	const [books, categories] = await Promise.all([
-		getBooks(searchParams),
-		getCategories()
-	])
+  const [books, categories] = await Promise.all([
+    getBooks(searchParams || {}),
+    getCategories()
+  ])
 
 	return (
 		<div className="min-h-screen bg-background">
@@ -50,3 +62,4 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
 		</div>
 	)
 }
+

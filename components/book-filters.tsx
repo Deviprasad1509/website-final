@@ -1,170 +1,144 @@
 'use client'
 
-import { useState } from 'react'
-import { Card, CardContent } from './ui/card'
-import { Input } from './ui/input'
+import { Category } from '@/types/db'
 import { Button } from './ui/button'
-import { Checkbox } from './ui/checkbox'
-import { Label } from './ui/label'
+import { Input } from './ui/input'
+import { Search, SlidersHorizontal } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { useCallback } from 'react'
 
 interface BookFiltersProps {
-  onFilterChange: (filters: {
-    priceRange: { min: number; max: number }
-    categories: string[]
-    formats: string[]
-    inStock: boolean
-  }) => void
-  categories: string[]
-  formats: string[]
+  categories: Category[]
 }
 
-function BookFilters({ onFilterChange, categories, formats }: BookFiltersProps) {
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 100 })
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [selectedFormats, setSelectedFormats] = useState<string[]>([])
-  const [inStock, setInStock] = useState(false)
+export default function BookFilters({ categories }: BookFiltersProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  
+  const currentCategory = searchParams.get('category')
+  const searchTerm = searchParams.get('q') || ''
+  const sort = searchParams.get('sort') || ''
 
-  const handlePriceChange = (field: 'min' | 'max', value: string) => {
-    const numValue = Number(value)
-    if (!isNaN(numValue)) {
-      const newRange = { ...priceRange, [field]: numValue }
-      setPriceRange(newRange)
-      updateFilters(newRange, selectedCategories, selectedFormats, inStock)
+  const createQueryString = useCallback((name: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (value) {
+      params.set(name, value)
+    } else {
+      params.delete(name)
     }
+    return params.toString()
+  }, [searchParams])
+
+  const handleSearch = (term: string) => {
+    router.push(`/books?${createQueryString('q', term)}`)
   }
 
-  const handleCategoryChange = (category: string) => {
-    const newCategories = selectedCategories.includes(category)
-      ? selectedCategories.filter(c => c !== category)
-      : [...selectedCategories, category]
-    setSelectedCategories(newCategories)
-    updateFilters(priceRange, newCategories, selectedFormats, inStock)
+  const handleCategoryClick = (categoryId: string) => {
+    router.push(`/books?${createQueryString('category', 
+      categoryId === currentCategory ? '' : categoryId
+    )}`)
   }
 
-  const handleFormatChange = (format: string) => {
-    const newFormats = selectedFormats.includes(format)
-      ? selectedFormats.filter(f => f !== format)
-      : [...selectedFormats, format]
-    setSelectedFormats(newFormats)
-    updateFilters(priceRange, selectedCategories, newFormats, inStock)
-  }
-
-  const handleInStockChange = (checked: boolean) => {
-    setInStock(checked)
-    updateFilters(priceRange, selectedCategories, selectedFormats, checked)
-  }
-
-  const updateFilters = (
-    prices: typeof priceRange,
-    cats: string[],
-    fmts: string[],
-    stock: boolean
-  ) => {
-    onFilterChange({
-      priceRange: prices,
-      categories: cats,
-      formats: fmts,
-      inStock: stock,
-    })
+  const handleSortChange = (value: string) => {
+    router.push(`/books?${createQueryString('sort', value)}`)
   }
 
   const clearFilters = () => {
-    setPriceRange({ min: 0, max: 100 })
-    setSelectedCategories([])
-    setSelectedFormats([])
-    setInStock(false)
-    onFilterChange({
-      priceRange: { min: 0, max: 100 },
-      categories: [],
-      formats: [],
-      inStock: false,
-    })
+    router.push('/books')
   }
 
   return (
-    <Card className="p-6">
-      <h3 className="text-lg font-semibold mb-4">Filters</h3>
-      <CardContent className="space-y-6">
-        {/* Price Range */}
-        <div className="space-y-3">
-          <h4 className="font-medium">Price Range</h4>
-          <div className="flex gap-4">
-            <div>
-              <Label htmlFor="min-price">Min</Label>
-              <Input
-                id="min-price"
-                type="number"
-                min="0"
-                value={priceRange.min}
-                onChange={(e) => handlePriceChange('min', e.target.value)}
-                className="w-24"
-              />
-            </div>
-            <div>
-              <Label htmlFor="max-price">Max</Label>
-              <Input
-                id="max-price"
-                type="number"
-                min="0"
-                value={priceRange.max}
-                onChange={(e) => handlePriceChange('max', e.target.value)}
-                className="w-24"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Categories */}
-        <div className="space-y-3">
-          <h4 className="font-medium">Categories</h4>
-          <div className="space-y-2">
-            {categories.map((category) => (
-              <div key={category} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`category-${category}`}
-                  checked={selectedCategories.includes(category)}
-                  onCheckedChange={() => handleCategoryChange(category)}
-                />
-                <Label htmlFor={`category-${category}`}>{category}</Label>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Formats */}
-        <div className="space-y-3">
-          <h4 className="font-medium">Formats</h4>
-          <div className="space-y-2">
-            {formats.map((format) => (
-              <div key={format} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`format-${format}`}
-                  checked={selectedFormats.includes(format)}
-                  onCheckedChange={() => handleFormatChange(format)}
-                />
-                <Label htmlFor={`format-${format}`}>{format}</Label>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* In Stock */}
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="in-stock"
-            checked={inStock}
-            onCheckedChange={(checked) => handleInStockChange(checked as boolean)}
+    <div className="space-y-4">
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search books..."
+            value={searchTerm}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="pl-10"
           />
-          <Label htmlFor="in-stock">In Stock Only</Label>
         </div>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" className="w-10 h-10 p-0">
+              <SlidersHorizontal className="h-4 w-4" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Filters</SheetTitle>
+              <SheetDescription>
+                Refine your book search
+              </SheetDescription>
+            </SheetHeader>
+            <div className="mt-6 space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-sm font-medium">Sort by</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant={sort === 'price-asc' ? 'secondary' : 'outline'}
+                    onClick={() => handleSortChange('price-asc')}
+                  >
+                    Price: Low to High
+                  </Button>
+                  <Button
+                    variant={sort === 'price-desc' ? 'secondary' : 'outline'}
+                    onClick={() => handleSortChange('price-desc')}
+                  >
+                    Price: High to Low
+                  </Button>
+                  <Button
+                    variant={sort === 'title-asc' ? 'secondary' : 'outline'}
+                    onClick={() => handleSortChange('title-asc')}
+                  >
+                    Title: A to Z
+                  </Button>
+                  <Button
+                    variant={sort === 'latest' ? 'secondary' : 'outline'}
+                    onClick={() => handleSortChange('latest')}
+                  >
+                    Latest Arrivals
+                  </Button>
+                </div>
+              </div>
 
-        {/* Clear Filters */}
-        <Button onClick={clearFilters} variant="outline" className="w-full">
-          Clear Filters
-        </Button>
-      </CardContent>
-    </Card>
+              <div className="space-y-4">
+                <h3 className="text-sm font-medium">Categories</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {categories.map((category) => (
+                    <Button
+                      key={category.id}
+                      variant={currentCategory === category.id ? 'secondary' : 'outline'}
+                      onClick={() => handleCategoryClick(category.id || '')}
+                      className="justify-start"
+                    >
+                      {category.name}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              <Button 
+                onClick={clearFilters}
+                variant="ghost" 
+                className="w-full mt-4"
+              >
+                Clear all filters
+              </Button>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </div>
   )
 }
 
-export default BookFilters

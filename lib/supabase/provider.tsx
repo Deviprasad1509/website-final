@@ -44,3 +44,4 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
     </Context.Provider>
   )
 }
+

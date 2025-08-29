@@ -40,3 +40,4 @@ export default function SupabaseProvider({ children }: { children: React.ReactNo
     </Context.Provider>
   )
 }
+

@@ -40,6 +40,8 @@ export const bookSchema = z.object({
 	cover_url: z.string().url().optional(),
 	file_url: z.string().url().optional(),
 	created_at: z.string().datetime().optional(),
+	authors: authorSchema.optional(),
+	categories: categorySchema.optional(),
 })
 export type Book = z.infer<typeof bookSchema>
 

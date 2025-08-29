@@ -29,6 +29,11 @@ class DatabaseService {
     }
   }
 
+  async getEbookById(id: string) {
+    // Alias for getBookById for backward compatibility
+    return this.getBookById(id)
+  }
+
   async createBook(book: Omit<Book, 'id' | 'created_at'>) {
     try {
       const { data, error } = await supabaseClient.from('books').insert([book]).single()
@@ -104,7 +109,7 @@ class DatabaseService {
   // User Profile
   async getProfile(userId: string) {
     try {
-      const { data, error } = await supabaseClient.from('users').select('*').eq('id', userId).single()
+      const { data, error } = await supabaseClient.from('profiles').select('*').eq('id', userId).single()
       if (error) return { data: null, error }
       return { data, error: null }
     } catch (error) {
@@ -115,7 +120,7 @@ class DatabaseService {
 
   async updateProfile(userId: string, updates: any) {
     try {
-      const { data, error } = await supabaseClient.from('users').update(updates).eq('id', userId).single()
+      const { data, error } = await supabaseClient.from('profiles').update(updates).eq('id', userId).single()
       return { data, error }
     } catch (error) {
       console.error('Error updating profile:', error)
@@ -173,6 +178,17 @@ class DatabaseService {
     } catch (error) {
       console.error('Error adding to library:', error)
       return { data: null, error }
+    }
+  }
+
+  async checkUserOwnsEbook(userId: string, bookId: string) {
+    try {
+      const { data, error } = await supabaseClient.from('library').select('id').eq('user_id', userId).eq('book_id', bookId).single()
+      if (error) return { owns: false, error }
+      return { owns: !!data, error: null }
+    } catch (error) {
+      console.error('Error checking book ownership:', error)
+      return { owns: false, error }
     }
   }
 }

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Header } from "@/components/header"
+import Header from "@/components/header"
 import { UserProfile } from "@/components/user-profile"
 import { useAuth } from "@/lib/auth-context"
 
@@ -37,3 +37,4 @@ export default function AccountPage() {
     </div>
   )
 }
+
