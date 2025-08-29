@@ -18,7 +18,7 @@ interface BookGridProps {
   books: Book[]
 }
 
-export function BookGrid({ books }: BookGridProps) {
+function BookGrid({ books }: BookGridProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
@@ -81,3 +81,5 @@ export function BookGrid({ books }: BookGridProps) {
     </div>
   )
 }
+
+export default BookGrid

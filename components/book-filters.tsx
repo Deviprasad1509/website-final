@@ -18,7 +18,7 @@ interface BookFiltersProps {
   formats: string[]
 }
 
-export function BookFilters({ onFilterChange, categories, formats }: BookFiltersProps) {
+function BookFilters({ onFilterChange, categories, formats }: BookFiltersProps) {
   const [priceRange, setPriceRange] = useState({ min: 0, max: 100 })
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedFormats, setSelectedFormats] = useState<string[]>([])
@@ -166,3 +166,5 @@ export function BookFilters({ onFilterChange, categories, formats }: BookFilters
     </Card>
   )
 }
+
+export default BookFilters

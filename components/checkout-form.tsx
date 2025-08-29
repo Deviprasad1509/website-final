@@ -6,7 +6,7 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
-export function CheckoutForm({ total, items }: { total: number; items: any[] }) {
+function CheckoutForm({ total, items }: { total: number; items: any[] }) {
   const [loading, setLoading] = useState(false)
   const supabase = createClientComponentClient()
 
@@ -83,3 +83,5 @@ export function CheckoutForm({ total, items }: { total: number; items: any[] }) 
     </Card>
   )
 }
+
+export default CheckoutForm
