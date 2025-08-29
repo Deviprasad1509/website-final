@@ -1,8 +1,8 @@
 import { Suspense } from 'react'
-import Hero from '../components/hero'
-import FeaturedBooks from '../components/featured-books'
-import Stats from '../components/stats'
-import Newsletter from '../components/newsletter'
+import Hero from '@/components/hero'
+import FeaturedBooks from '@/components/featured-books'
+import Stats from '@/components/stats'
+import Newsletter from '@/components/newsletter'
 
 export default function HomePage() {
 	return (

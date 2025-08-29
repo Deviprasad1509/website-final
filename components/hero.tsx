@@ -1,35 +1,26 @@
-import Link from 'next/link'
-import { BookOpen } from 'lucide-react'
+import React from 'react';
 
 export default function Hero() {
-	return (
-		<section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
-			<div className="container mx-auto px-4 text-center">
-				<div className="max-w-3xl mx-auto">
-					<BookOpen className="h-16 w-16 mx-auto mb-6" />
-					<h1 className="text-5xl font-bold mb-6">
-						Discover Your Next Great Read
-					</h1>
-					<p className="text-xl mb-8 text-blue-100">
-						Explore thousands of books across all genres. From bestsellers to hidden gems, 
-						find your perfect story in our digital library.
-					</p>
-					<div className="flex flex-col sm:flex-row gap-4 justify-center">
-						<Link
-							href="/books"
-							className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-						>
-							Browse Books
-						</Link>
-						<Link
-							href="/signup"
-							className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
-						>
-							Get Started
-						</Link>
-					</div>
-				</div>
-			</div>
-		</section>
-	)
+  return (
+    <section className="bg-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold tracking-tight text-text-heading sm:text-6xl">
+            Discover Your Next <span className="text-primary">Favorite Book</span>.
+          </h1>
+          <p className="mt-6 text-lg leading-8 text-text-muted">
+            Explore our vast collection of ebooks and audiobooks. Find your next great read from our curated lists and bestsellers.
+          </p>
+          <div className="mt-10 flex items-center justify-center gap-x-6">
+            <a href="/books" className="btn">
+              Explore Books
+            </a>
+            <a href="/about" className="text-sm font-semibold leading-6 text-text-heading">
+              Learn more <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

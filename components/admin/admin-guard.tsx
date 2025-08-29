@@ -1,7 +1,8 @@
-"use client"
+'use client'
 
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 interface AdminGuardProps {
   children: React.ReactNode
@@ -9,47 +10,38 @@ interface AdminGuardProps {
 
 export function AdminGuard({ children }: AdminGuardProps) {
   const router = useRouter()
+  const supabase = createClientComponentClient()
 
   useEffect(() => {
-    // TODO: Replace with actual auth context when implemented
-    // For now, this is a placeholder that will be updated
-    // when we implement the auth context with Supabase
-    
-    console.log('🛡️ AdminGuard: Checking access...')
-    
-    // Mock check - replace with actual auth logic
-    const isAuthenticated = false // TODO: Get from auth context
-    const userRole = 'user' // TODO: Get from auth context
-    
-    if (!isAuthenticated) {
-      console.log('❌ AdminGuard: User not authenticated, redirecting to login')
-      router.push("/login")
-      return
+    const checkAdminStatus = async () => {
+      try {
+        // Check if user is authenticated
+        const { data: { session } } = await supabase.auth.getSession()
+        
+        if (!session) {
+          router.replace('/login')
+          return
+        }
+
+        // Check if user has admin role
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single()
+
+        if (!profile || profile.role !== 'admin') {
+          router.replace('/library')
+          return
+        }
+      } catch (error) {
+        console.error('Error in AdminGuard:', error)
+        router.replace('/login')
+      }
     }
 
-    if (userRole !== "admin") {
-      console.log('❌ AdminGuard: User is not admin (role:', userRole, '), redirecting to home')
-      router.push("/")
-      return
-    }
-    
-    console.log('✅ AdminGuard: Access granted for admin user')
-  }, [router])
-
-  // TODO: Replace with actual auth check
-  const isAuthenticated = false
-  const userRole = 'user'
-
-  if (!isAuthenticated || userRole !== "admin") {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Access Denied</h1>
-          <p className="text-gray-600 mt-2">You need admin privileges to access this page.</p>
-        </div>
-      </div>
-    )
-  }
+    checkAdminStatus()
+  }, [router, supabase])
 
   return <>{children}</>
 }

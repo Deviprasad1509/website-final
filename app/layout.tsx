@@ -1,30 +1,34 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { CartProvider } from "@/lib/cart-context"
-import { AuthProvider } from "@/lib/auth-context"
+import "./globals.css";
+import type { Metadata } from "next";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import { AuthProvider } from "@/components/auth/AuthProvider";
+import { Roboto } from "next/font/google";
+import { SupabaseProvider } from "@/lib/supabase/provider";
 
-const inter = Inter({ subsets: ["latin"] })
+const roboto = Roboto({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: "BuisBuz - Premium Book Store",
-  description: "Discover your next great read with our curated collection of ebooks",
-    generator: 'v0.app'
-}
+  title: "BuisBuz Premium Book Store",
+  description: "Discover your next great read with SR ENTERPRISES",
+};
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <AuthProvider>
-          <CartProvider>{children}</CartProvider>
-        </AuthProvider>
+      <body className={roboto.className}>
+        <SupabaseProvider>
+          <AuthProvider>
+            <Header />
+            <main>{children}</main>
+            <Footer />
+          </AuthProvider>
+        </SupabaseProvider>
       </body>
     </html>
-  )
+  );
 }

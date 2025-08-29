@@ -1,166 +1,92 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from './ui/button'
-import { Input } from './ui/input'
-import { Label } from './ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
-import { Alert, AlertDescription } from './ui/alert'
-import { Loader2 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 export default function SignupForm() {
-	const [name, setName] = useState('')
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
-	const [confirmPassword, setConfirmPassword] = useState('')
-	const [loading, setLoading] = useState(false)
-	const [error, setError] = useState('')
-	const [success, setSuccess] = useState('')
-	const router = useRouter()
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault()
-		setLoading(true)
-		setError('')
-		setSuccess('')
+  const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const supabase = createClient()
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        // emailRedirectTo: `${location.origin}/auth/callback`,
+      },
+    })
 
-		// Validation
-		if (password !== confirmPassword) {
-			setError('Passwords do not match')
-			setLoading(false)
-			return
-		}
+    if (error) {
+      setError(error.message)
+      return
+    }
 
-		if (password.length < 6) {
-			setError('Password must be at least 6 characters')
-			setLoading(false)
-			return
-		}
+    // Redirect to a confirmation page
+    router.push('/auth/confirm') 
+  }
 
-		try {
-			const response = await fetch('/api/auth/signup', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name, email, password })
-			})
+  return (
+    <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-lg">
+        <h1 className="text-center text-2xl font-bold text-primary sm:text-3xl">Create an account</h1>
 
-			const data = await response.json()
+        <p className="mx-auto mt-4 max-w-md text-center text-muted-foreground">
+          Join our community of book lovers.
+        </p>
 
-			if (data.ok) {
-				setSuccess('Account created successfully! Please check your email to verify your account.')
-				// Clear form
-				setName('')
-				setEmail('')
-				setPassword('')
-				setConfirmPassword('')
-				
-				// Redirect after a short delay
-				setTimeout(() => {
-					router.push('/login')
-				}, 2000)
-			} else {
-				setError(data.error || 'Signup failed')
-			}
-		} catch (err) {
-			setError('Network error. Please try again.')
-		} finally {
-			setLoading(false)
-		}
-	}
+        <form onSubmit={handleSignUp} className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8 bg-card">
+          <p className="text-center text-lg font-medium">Sign up for a new account</p>
 
-	return (
-		<Card className="w-full max-w-md mx-auto">
-			<CardHeader>
-				<CardTitle>Create Account</CardTitle>
-				<CardDescription>Sign up to start your reading journey</CardDescription>
-			</CardHeader>
-			<CardContent>
-				<form onSubmit={handleSubmit} className="space-y-4">
-					{error && (
-						<Alert variant="destructive">
-							<AlertDescription>{error}</AlertDescription>
-						</Alert>
-					)}
-					
-					{success && (
-						<Alert>
-							<AlertDescription>{success}</AlertDescription>
-						</Alert>
-					)}
-					
-					<div className="space-y-2">
-						<Label htmlFor="name">Full Name</Label>
-						<Input
-							id="name"
-							type="text"
-							placeholder="Enter your full name"
-							value={name}
-							onChange={(e) => setName(e.target.value)}
-							required
-							disabled={loading}
-						/>
-					</div>
-					
-					<div className="space-y-2">
-						<Label htmlFor="email">Email</Label>
-						<Input
-							id="email"
-							type="email"
-							placeholder="Enter your email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-							required
-							disabled={loading}
-						/>
-					</div>
-					
-					<div className="space-y-2">
-						<Label htmlFor="password">Password</Label>
-						<Input
-							id="password"
-							type="password"
-							placeholder="Create a password"
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							required
-							disabled={loading}
-							minLength={6}
-						/>
-					</div>
-					
-					<div className="space-y-2">
-						<Label htmlFor="confirmPassword">Confirm Password</Label>
-						<Input
-							id="confirmPassword"
-							type="password"
-							placeholder="Confirm your password"
-							value={confirmPassword}
-							onChange={(e) => setConfirmPassword(e.target.value)}
-							required
-							disabled={loading}
-						/>
-					</div>
-					
-					<Button type="submit" className="w-full" disabled={loading}>
-						{loading ? (
-							<>
-								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-								Creating Account...
-							</>
-						) : (
-							'Create Account'
-						)}
-					</Button>
-				</form>
-				
-				<div className="mt-4 text-center text-sm">
-					Already have an account?{' '}
-					<a href="/login" className="text-blue-600 hover:underline">
-						Sign in here
-					</a>
-				</div>
-			</CardContent>
-		</Card>
-	)
+          {error && <p className="text-red-500 text-center">{error}</p>}
+
+          <div>
+            <label htmlFor="email" className="sr-only">Email</label>
+            <div className="relative">
+              <input
+                type="email"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-lg border-border p-4 pe-12 text-sm shadow-sm bg-background text-foreground"
+                placeholder="Enter email"
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="password" className="sr-only">Password</label>
+            <div className="relative">
+              <input
+                type="password"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-lg border-border p-4 pe-12 text-sm shadow-sm bg-background text-foreground"
+                placeholder="Enter password"
+                required
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="block w-full rounded-lg bg-primary px-5 py-3 text-sm font-medium text-primary-foreground"
+          >
+            Sign up
+          </button>
+
+          <p className="text-center text-sm text-muted-foreground">
+            Already have an account?
+            <a className="underline" href="/login"> Sign in</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  )
 }

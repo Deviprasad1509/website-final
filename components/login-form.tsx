@@ -1,108 +1,122 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from './ui/button'
-import { Input } from './ui/input'
-import { Label } from './ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
-import { Alert, AlertDescription } from './ui/alert'
-import { Loader2 } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useSupabase } from '@/lib/supabase/provider'
 
 export default function LoginForm() {
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
-	const [loading, setLoading] = useState(false)
-	const [error, setError] = useState('')
-	const router = useRouter()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const { supabase } = useSupabase()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault()
-		setLoading(true)
-		setError('')
+  const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setError(null)
+    setIsLoading(true)
+    
+    try {
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
 
-		try {
-			const response = await fetch('/api/auth/signin', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ email, password })
-			})
+      if (signInError) {
+        setError(signInError.message)
+        return
+      }
 
-			const data = await response.json()
+      if (data.user) {
+        // Get user's role from profiles table
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', data.user.id)
+          .single()
 
-			if (data.ok) {
-				// Redirect to dashboard or previous page
-				router.push('/account')
-				router.refresh()
-			} else {
-				setError(data.error || 'Login failed')
-			}
-		} catch (err) {
-			setError('Network error. Please try again.')
-		} finally {
-			setLoading(false)
-		}
-	}
+        if (profileError) {
+          console.error('Error fetching profile:', profileError)
+        }
 
-	return (
-		<Card className="w-full max-w-md mx-auto">
-			<CardHeader>
-				<CardTitle>Welcome Back</CardTitle>
-				<CardDescription>Sign in to your account to continue</CardDescription>
-			</CardHeader>
-			<CardContent>
-				<form onSubmit={handleSubmit} className="space-y-4">
-					{error && (
-						<Alert variant="destructive">
-							<AlertDescription>{error}</AlertDescription>
-						</Alert>
-					)}
-					
-					<div className="space-y-2">
-						<Label htmlFor="email">Email</Label>
-						<Input
-							id="email"
-							type="email"
-							placeholder="Enter your email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-							required
-							disabled={loading}
-						/>
-					</div>
-					
-					<div className="space-y-2">
-						<Label htmlFor="password">Password</Label>
-						<Input
-							id="password"
-							type="password"
-							placeholder="Enter your password"
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							required
-							disabled={loading}
-						/>
-					</div>
-					
-					<Button type="submit" className="w-full" disabled={loading}>
-						{loading ? (
-							<>
-								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-								Signing in...
-							</>
-						) : (
-							'Sign In'
-						)}
-					</Button>
-				</form>
-				
-				<div className="mt-4 text-center text-sm">
-					Don't have an account?{' '}
-					<a href="/signup" className="text-blue-600 hover:underline">
-						Sign up here
-					</a>
-				</div>
-			</CardContent>
-		</Card>
-	)
+        // Get the redirect URL from query params or use default
+        const redirectTo = searchParams.get('redirectTo') || (profile?.role === 'admin' ? '/admin' : '/library')
+        
+        await router.refresh() // Refresh to update auth state
+        await router.replace(redirectTo)
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.')
+      console.error('Sign in error:', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-lg">
+        <h1 className="text-center text-2xl font-bold text-primary sm:text-3xl">Get started today</h1>
+
+        <p className="mx-auto mt-4 max-w-md text-center text-muted-foreground">
+          Welcome back! Please enter your details.
+        </p>
+
+        <form onSubmit={handleSignIn} className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8 bg-card">
+          <p className="text-center text-lg font-medium">Sign in to your account</p>
+
+          {error && <p className="text-red-500 text-center">{error}</p>}
+
+          <div>
+            <label htmlFor="email" className="sr-only">Email</label>
+
+            <div className="relative">
+              <input
+                type="email"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-lg border-border p-4 pe-12 text-sm shadow-sm bg-background text-foreground"
+                placeholder="Enter email"
+                disabled={isLoading}
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="password" className="sr-only">Password</label>
+
+            <div className="relative">
+              <input
+                type="password"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-lg border-border p-4 pe-12 text-sm shadow-sm bg-background text-foreground"
+                placeholder="Enter password"
+                disabled={isLoading}
+                required
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="block w-full rounded-lg bg-primary px-5 py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Signing in...' : 'Sign in'}
+          </button>
+
+          <p className="text-center text-sm text-muted-foreground">
+            No account?
+            <a className="underline" href="/signup"> Sign up</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  )
 }

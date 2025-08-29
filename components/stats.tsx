@@ -1,35 +1,55 @@
-import { BookOpen, Users, Star, Download } from 'lucide-react'
+import React from 'react';
 
 export default function Stats() {
-	return (
-		<section className="py-16 bg-gray-50">
-			<div className="container mx-auto px-4">
-				<div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-					<div>
-						<BookOpen className="h-12 w-12 mx-auto text-blue-600 mb-4" />
-						<div className="text-3xl font-bold text-gray-900">10,000+</div>
-						<div className="text-gray-600">Books Available</div>
-					</div>
-					
-					<div>
-						<Users className="h-12 w-12 mx-auto text-green-600 mb-4" />
-						<div className="text-3xl font-bold text-gray-900">50,000+</div>
-						<div className="text-gray-600">Happy Readers</div>
-					</div>
-					
-					<div>
-						<Star className="h-12 w-12 mx-auto text-yellow-600 mb-4" />
-						<div className="text-3xl font-bold text-gray-900">4.8</div>
-						<div className="text-gray-600">Average Rating</div>
-					</div>
-					
-					<div>
-						<Download className="h-12 w-12 mx-auto text-purple-600 mb-4" />
-						<div className="text-3xl font-bold text-gray-900">1M+</div>
-						<div className="text-gray-600">Downloads</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	)
+  return (
+    <section className="bg-background">
+      <div className="mx-auto max-w-screen-xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="text-3xl font-bold text-foreground sm:text-4xl">
+            Trusted by the best
+          </h2>
+
+          <p className="mt-4 text-muted-foreground sm:text-xl">
+            We are proud to partner with the leading publishers and authors to bring you the best reading experience.
+          </p>
+        </div>
+
+        <div className="mt-8 sm:mt-12">
+          <dl className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div
+              className="flex flex-col rounded-lg border border-border px-4 py-8 text-center"
+            >
+              <dt className="order-last text-lg font-medium text-muted-foreground">
+                Total Books
+              </dt>
+
+              <dd className="text-4xl font-extrabold text-primary md:text-5xl">
+                10k+
+              </dd>
+            </div>
+
+            <div
+              className="flex flex-col rounded-lg border border-border px-4 py-8 text-center"
+            >
+              <dt className="order-last text-lg font-medium text-muted-foreground">
+                Happy Readers
+              </dt>
+
+              <dd className="text-4xl font-extrabold text-primary md:text-5xl">2M+</dd>
+            </div>
+
+            <div
+              className="flex flex-col rounded-lg border border-border px-4 py-8 text-center"
+            >
+              <dt className="order-last text-lg font-medium text-muted-foreground">
+                Authors
+              </dt>
+
+              <dd className="text-4xl font-extrabold text-primary md:text-5xl">5k+</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+  );
 }

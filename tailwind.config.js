@@ -8,53 +8,41 @@ module.exports = {
     './src/**/*.{ts,tsx}',
   ],
   theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
-    },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
+        primary: 'var(--primary)',
+        secondary: 'var(--secondary)',
+        background: 'var(--background)',
+        'text-heading': 'var(--text-heading)',
+        'text-body': 'var(--text-body)',
+        'text-muted': 'var(--text-muted)',
+        'button-background': 'var(--button-background)',
+        'button-text': 'var(--button-text)',
+        'button-hover-background': 'var(--button-hover-background)',
+        'input-border': 'var(--input-border)',
+        'input-text': 'var(--input-text)',
+        'input-placeholder': 'var(--input-placeholder)',
+        'input-background': 'var(--input-background)',
+      },
+      fontFamily: {
+        sans: ['Inter', 'Roboto', 'sans-serif'],
+      },
+      fontSize: {
+        'heading': '24px',
+        'body': '16px',
+        'small': '14px',
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        'button': '8px',
+        'input': '6px',
+        'card': '12px',
+      },
+      padding: {
+        'button': '12px 20px',
+        'input': '10px 14px',
+      },
+      boxShadow: {
+        'card': '0 2px 8px rgba(0,0,0,0.05)',
       },
       keyframes: {
         "accordion-down": {

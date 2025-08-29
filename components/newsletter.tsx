@@ -1,37 +1,40 @@
-import { Mail } from 'lucide-react'
+import React from 'react';
 
 export default function Newsletter() {
-	return (
-		<section className="py-16 bg-blue-600 text-white">
-			<div className="container mx-auto px-4 text-center">
-				<div className="max-w-2xl mx-auto">
-					<Mail className="h-12 w-12 mx-auto mb-6" />
-					<h2 className="text-3xl font-bold mb-4">
-						Stay Updated with New Releases
-					</h2>
-					<p className="text-blue-100 mb-8">
-						Get notified about new books, exclusive offers, and reading recommendations.
-					</p>
-					
-					<form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-						<input
-							type="email"
-							placeholder="Enter your email"
-							className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-300"
-						/>
-						<button
-							type="submit"
-							className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-						>
-							Subscribe
-						</button>
-					</form>
-					
-					<p className="text-sm text-blue-200 mt-4">
-						We respect your privacy. Unsubscribe at any time.
-					</p>
-				</div>
-			</div>
-		</section>
-	)
+  return (
+    <section className="bg-gray-50 py-16 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-text-heading sm:text-4xl">
+            Subscribe to our Newsletter
+          </h2>
+          <p className="mt-4 text-lg leading-8 text-text-muted">
+            Get the latest updates on new releases, special offers, and curated reading lists.
+          </p>
+        </div>
+        <form className="mt-10 mx-auto max-w-md">
+          <div className="flex gap-x-4">
+            <label htmlFor="email-address" className="sr-only">
+              Email address
+            </label>
+            <input
+              id="email-address"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              className="input min-w-0 flex-auto"
+              placeholder="Enter your email"
+            />
+            <button
+              type="submit"
+              className="btn"
+            >
+              Subscribe
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  );
 }
