@@ -1,33 +1,20 @@
 "use client"
-import CheckoutForm from "../../components/checkout-form"
-import { OrderSummary } from "../../components/order-summary"
-import { Header } from "../../components/header"
+import CheckoutForm from "@/components/checkout-form"
+import { OrderSummary } from "@/components/order-summary"
+import { Header } from "@/components/header"
 
 export default function CheckoutPage() {
 	// Mock data for now - this would come from cart context in a real app
-	const mockOrder = {
-		id: 'mock-order-123',
-		total: 29.99,
-		subtotal: 29.99,
-		currency: 'usd',
-		items: [
-			{
-				id: 'item-1',
-				book_id: 'book-1',
-				qty: 1,
-				unit_price: 29.99,
-				books: { title: 'Sample Book' }
-			}
-		]
-	}
-
-	const mockBooks = [
+	const mockItems = [
 		{
-			id: 'book-1',
+			id: 'item-1',
 			title: 'Sample Book',
-			price: 29.99
+			price: 29.99,
+			quantity: 1
 		}
 	]
+
+	const total = mockItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
 	return (
 		<div className="min-h-screen bg-background">
@@ -38,10 +25,10 @@ export default function CheckoutPage() {
 
 					<div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 						<div>
-							<CheckoutForm order={mockOrder} books={mockBooks} />
+							<CheckoutForm total={total} items={mockItems} />
 						</div>
 						<div>
-							<OrderSummary />
+							<OrderSummary items={mockItems} />
 						</div>
 					</div>
 				</div>

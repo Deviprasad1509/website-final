@@ -12,7 +12,7 @@ interface User {
   email?: string
 }
 
-export default function Header() {
+export function Header() {
   const pathname = usePathname()
   const [user, setUser] = useState<User | null>(null)
   const supabase = createClient()
