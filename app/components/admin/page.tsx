@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { supabaseClient } from '@/lib/supabaseClient'
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState({
@@ -12,20 +12,18 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     const fetchStats = async () => {
-      const supabase = createClient()
-      
       // Get total users count
-      const { count: usersCount } = await supabase
+      const { count: usersCount } = await supabaseClient
         .from('profiles')
         .select('*', { count: 'exact', head: true })
 
       // Get total orders count
-      const { count: ordersCount } = await supabase
+      const { count: ordersCount } = await supabaseClient
         .from('orders')
         .select('*', { count: 'exact', head: true })
 
       // Get total books count
-      const { count: booksCount } = await supabase
+      const { count: booksCount } = await supabaseClient
         .from('books')
         .select('*', { count: 'exact', head: true })
 

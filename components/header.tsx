@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from './ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
-import { createClient } from '@/lib/supabase/client'
+import { supabaseClient } from '@/lib/supabaseClient'
 import { useEffect, useState } from 'react'
 
 interface User {
@@ -12,26 +12,24 @@ interface User {
   email?: string
 }
 
-export function Header() {
+export default function Header() {
   const pathname = usePathname()
   const [user, setUser] = useState<User | null>(null)
-  const supabase = createClient()
-
   useEffect(() => {
     async function getUser() {
-      const { data: { session } } = await supabase.auth.getSession()
+      const { data: { session } } = await supabaseClient.auth.getSession()
       setUser(session?.user || null)
     }
     getUser()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabaseClient.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null)
     })
 
     return () => {
       subscription.unsubscribe()
     }
-  }, [supabase])
+  }, [])
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">

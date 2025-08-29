@@ -1,17 +1,16 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { supabaseClient } from '@/lib/supabaseClient'
 
 export default function UserMenuPage() {
   const [user, setUser] = useState<any>(null)
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await supabaseClient.auth.getUser()
       if (user) {
-        const { data: profile } = await supabase
+        const { data: profile } = await supabaseClient
           .from('profiles')
           .select('*')
           .eq('id', user.id)
