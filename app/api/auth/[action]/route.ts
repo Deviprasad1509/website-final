@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { signIn, signOut, signup } from '../../../../server/auth'
+import { signIn, signOut, signUp } from '@/lib/server-functions'
 
 const signupSchema = z.object({ email: z.string().email(), password: z.string().min(6), name: z.string().min(1) })
 const signinSchema = z.object({ email: z.string().email(), password: z.string().min(6) })
@@ -10,7 +10,7 @@ export async function POST(req: Request, { params }: { params: { action: string 
 		const body = await req.json().catch(() => ({}))
 		if (params.action === 'signup') {
 			const { email, password, name } = signupSchema.parse(body)
-			const result = await signup(email, password, name)
+			const result = await signUp(email, password, name)
 			return NextResponse.json({ ok: true, userId: result.userId })
 		}
 		if (params.action === 'signin') {

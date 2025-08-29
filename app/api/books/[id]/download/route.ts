@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getBook } from '../../../../server/books'
-import { hasAccess } from '../../../../server/library'
-import { requireAuth } from '../../../../server/auth'
-import { supabaseAdmin } from '../../../../server/supabaseAdmin'
+import { getBook, hasAccess, requireAuth } from '@/lib/server-functions'
+import { createClient } from '@supabase/supabase-js'
+
+// Admin client for storage operations
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY as string
+const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
+	auth: {
+		persistSession: false,
+		autoRefreshToken: false,
+		detectSessionInUrl: false,
+	},
+})
 
 export async function GET(
 	req: NextRequest,

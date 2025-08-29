@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { listCategories, createCategory } from '../../../server/categories'
-import { requireAdmin } from '../../../server/auth'
-import { categorySchema } from '../../../types/db'
+import { listCategories, createCategory, requireAdmin } from '@/lib/server-functions'
+import { categorySchema } from '@/types/db'
 
 export async function GET() {
 	try {

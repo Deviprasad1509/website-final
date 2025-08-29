@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { listAuthors, createAuthor } from '../../../server/authors'
-import { requireAdmin } from '../../../server/auth'
-import { authorSchema } from '../../../types/db'
+import { listAuthors, createAuthor, requireAdmin } from '@/lib/server-functions'
+import { authorSchema } from '@/types/db'
 
 export async function GET() {
 	try {

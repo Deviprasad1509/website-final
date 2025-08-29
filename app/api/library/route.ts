@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { listMyLibrary, hasAccess } from '../../../server/library'
-import { requireAuth } from '../../../server/auth'
+import { listMyLibrary, hasAccess, requireAuth } from '@/lib/server-functions'
 
 export async function GET(req: NextRequest) {
 	try {

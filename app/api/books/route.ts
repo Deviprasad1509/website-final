@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { listBooks, createBook } from '../../../server/books'
-import { requireAdmin } from '../../../server/auth'
-import { bookSchema } from '../../../types/db'
+import { listBooks, createBook, requireAuth } from '@/lib/server-functions'
+import { bookSchema } from '@/types/db'
 
 export async function GET(req: NextRequest) {
 	try {
@@ -23,7 +22,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
 	try {
-		const admin = await requireAdmin()
+		const admin = await requireAuth()
 		const body = await req.json()
 		const bookData = bookSchema.omit({ id: true, created_at: true }).parse(body)
 		
