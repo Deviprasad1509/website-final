@@ -1,39 +1,104 @@
-import React from 'react';
-import Link from 'next/link';
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { Button } from './ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import { createClient } from '@/lib/supabase/client'
+import { useEffect, useState } from 'react'
+
+interface User {
+  id: string
+  email?: string
+}
 
 export default function Header() {
+  const pathname = usePathname()
+  const [user, setUser] = useState<User | null>(null)
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function getUser() {
+      const { data: { session } } = await supabase.auth.getSession()
+      setUser(session?.user || null)
+    }
+    getUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null)
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [supabase])
+
   return (
-    <header className="bg-white shadow-sm">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center">
-            <Link href="/" className="text-2xl font-bold text-text-heading">
-              BuisBuz
+    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <div className="container mx-auto px-4 py-4">
+        <nav className="flex items-center justify-between">
+          <div className="flex items-center space-x-8">
+            <Link href="/" className="text-xl font-bold hover:text-primary">
+              BookStore
             </Link>
+            <div className="hidden md:flex space-x-6">
+              <Link 
+                href="/books" 
+                className={`hover:text-primary transition-colors ${pathname === '/books' ? 'text-primary font-medium' : ''}`}
+              >
+                Books
+              </Link>
+              <Link 
+                href="/categories" 
+                className={`hover:text-primary transition-colors ${pathname === '/categories' ? 'text-primary font-medium' : ''}`}
+              >
+                Categories
+              </Link>
+              <Link 
+                href="/authors" 
+                className={`hover:text-primary transition-colors ${pathname === '/authors' ? 'text-primary font-medium' : ''}`}
+              >
+                Authors
+              </Link>
+            </div>
           </div>
-          <div className="hidden md:flex md:items-center md:space-x-8">
-            <Link href="/books" className="text-text-body hover:text-primary">
-              Books
-            </Link>
-            <Link href="/categories" className="text-text-body hover:text-primary">
-              Categories
-            </Link>
-            <Link href="/authors" className="text-text-body hover:text-primary">
-              Authors
-            </Link>
-            <Link href="/about" className="text-text-body hover:text-primary">
-              About
-            </Link>
+
+          <div className="flex items-center space-x-6">
+            {user ? (
+              <>
+                <Link 
+                  href="/library"
+                  className={`hover:text-primary transition-colors ${pathname === '/library' ? 'text-primary font-medium' : ''}`}
+                >
+                  My Library
+                </Link>
+                <Link 
+                  href="/orders"
+                  className={`hover:text-primary transition-colors ${pathname === '/orders' ? 'text-primary font-medium' : ''}`}
+                >
+                  Orders
+                </Link>
+                <Link href="/account">
+                  <Avatar>
+                    <AvatarImage src="" />
+                    <AvatarFallback>
+                      {user.email?.charAt(0).toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost">Log in</Button>
+                </Link>
+                <Link href="/signup">
+                  <Button>Sign up</Button>
+                </Link>
+              </>
+            )}
           </div>
-          <div className="flex items-center space-x-4">
-            <Link href="/login" className="btn">
-              Login
-            </Link>
-            <Link href="/signup" className="hidden sm:block text-text-body hover:text-primary">
-              Register
-            </Link>
-          </div>
-        </div>
+        </nav>
       </div>
     </header>
   );
