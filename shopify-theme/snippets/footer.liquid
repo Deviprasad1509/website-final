@@ -1,0 +1,73 @@
+<footer class="bg-gray-900 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+
+      <!-- Store Info -->
+      <div class="col-span-1 md:col-span-2">
+        <div class="flex items-center mb-4">
+          {% if shop.brand.logo %}
+            <img src="{{ shop.brand.logo | image_url }}" alt="{{ shop.name }}" class="h-8 w-auto brightness-0 invert">
+          {% else %}
+            <span class="text-xl font-bold">{{ shop.name }}</span>
+          {% endif %}
+        </div>
+        <p class="text-gray-300 mb-4 max-w-md">
+          {{ settings.store_description }}
+        </p>
+        <div class="flex space-x-4">
+          {% if shop.social.facebook %}
+            <a href="{{ shop.social.facebook }}" class="text-gray-400 hover:text-white transition-colors">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+          {% endif %}
+          {% if shop.social.twitter %}
+            <a href="{{ shop.social.twitter }}" class="text-gray-400 hover:text-white transition-colors">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+            </a>
+          {% endif %}
+          {% if shop.social.instagram %}
+            <a href="{{ shop.social.instagram }}" class="text-gray-400 hover:text-white transition-colors">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.017 0C8.396 0 7.996.014 6.8.067 5.609.12 4.855.245 4.22.467a4.818 4.818 0 00-1.757 1.144A4.818 4.818 0 00.467 4.22c-.222.635-.347 1.389-.4 2.58C.014 7.996 0 8.396 0 12.017s.014 4.021.067 5.217c.053 1.191.178 1.945.4 2.58a4.818 4.818 0 001.144 1.757 4.818 4.818 0 001.757 1.144c.635.222 1.389.347 2.58.4C7.996 23.986 8.396 24 12.017 24s4.021-.014 5.217-.067c1.191-.053 1.945-.178 2.58-.4a4.818 4.818 0 001.757-1.144 4.818 4.818 0 001.144-1.757c.222-.635.347-1.389.4-2.58.053-1.196.067-1.596.067-4.717s-.014-4.021-.067-5.217c-.053-1.191-.178-1.945-.4-2.58a4.818 4.818 0 00-1.144-1.757A4.818 4.818 0 0019.8.467c-.635-.222-1.389-.347-2.58-.4C16.021.014 15.621 0 12.017 0zm0 2.163c3.574 0 4.021.014 5.217.067 1.122.049 1.745.189 2.163.4.52.26.895.635 1.155 1.155.211.418.351 1.041.4 2.163.053 1.196.067 1.643.067 4.717s-.014 3.521-.067 4.717c-.049 1.122-.189 1.745-.4 2.163a2.92 2.92 0 01-1.155 1.155c-.418.211-1.041.351-2.163.4-1.196.053-1.643.067-4.717.067s-3.521-.014-4.717-.067c-1.122-.049-1.745-.189-2.163-.4a2.92 2.92 0 01-1.155-1.155c-.211-.418-.351-1.041-.4-2.163C2.147 16.038 2.133 15.591 2.133 12.017s.014-3.521.067-4.717c.049-1.122.189-1.745.4-2.163.26-.52.635-.895 1.155-1.155.418-.211 1.041-.351 2.163-.4 1.196-.053 1.643-.067 4.717-.067zm0 3.781a6.073 6.073 0 100 12.146 6.073 6.073 0 000-12.146zm0 2.163a3.91 3.91 0 110 7.82 3.91 3.91 0 010-7.82zm6.406-2.73a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/></svg>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+        <ul class="space-y-2">
+          <li><a href="/" class="text-gray-300 hover:text-white transition-colors">Home</a></li>
+          <li><a href="/collections/all" class="text-gray-300 hover:text-white transition-colors">All Books</a></li>
+          <li><a href="/pages/categories" class="text-gray-300 hover:text-white transition-colors">Categories</a></li>
+          <li><a href="/pages/authors" class="text-gray-300 hover:text-white transition-colors">Authors</a></li>
+          <li><a href="/pages/about" class="text-gray-300 hover:text-white transition-colors">About Us</a></li>
+        </ul>
+      </div>
+
+      <!-- Customer Service -->
+      <div>
+        <h3 class="text-lg font-semibold mb-4">Customer Service</h3>
+        <ul class="space-y-2">
+          <li><a href="/pages/contact" class="text-gray-300 hover:text-white transition-colors">Contact Us</a></li>
+          <li><a href="/pages/shipping" class="text-gray-300 hover:text-white transition-colors">Shipping Info</a></li>
+          <li><a href="/pages/returns" class="text-gray-300 hover:text-white transition-colors">Returns</a></li>
+          <li><a href="/pages/faq" class="text-gray-300 hover:text-white transition-colors">FAQ</a></li>
+          <li><a href="/pages/privacy" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+      <p class="text-gray-400 text-sm">
+        © {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.
+      </p>
+      <div class="flex items-center space-x-6 mt-4 md:mt-0">
+        <a href="/pages/terms" class="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
+        <a href="/pages/privacy" class="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
+        <a href="/pages/cookies" class="text-gray-400 hover:text-white text-sm transition-colors">Cookie Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,45 @@
+<section class="newsletter">
+  <div class="container">
+    <h2>{{ section.settings.title }}</h2>
+    <p>{{ section.settings.subtitle }}</p>
+    <form action="/contact#contact_form" method="post" id="contact_form" accept-charset="UTF-8" class="contact-form">
+      <input type="hidden" name="form_type" value="customer">
+      <input type="hidden" name="utf8" value="✓">
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <input type="email" name="contact[email]" placeholder="{{ section.settings.placeholder }}" required>
+      <button type="submit" class="btn">{{ section.settings.button_text }}</button>
+    </form>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter Signup",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Stay Updated"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Subscribe to our newsletter for the latest ebook releases and exclusive offers."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Email Placeholder",
+      "default": "Enter your email"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Subscribe"
+    }
+  ]
+}
+{% endschema %}

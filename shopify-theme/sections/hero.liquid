@@ -1,0 +1,46 @@
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <h1>{{ section.settings.title }}</h1>
+      <p>{{ section.settings.subtitle }}</p>
+      <a href="{{ section.settings.button_link }}" class="btn">{{ section.settings.button_text }}</a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Welcome to Buis Buz"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Discover your next great read with our premium ebook collection."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Browse Books"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link",
+      "default": "/collections/all"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background Image"
+    }
+  ]
+}
+{% endschema %}

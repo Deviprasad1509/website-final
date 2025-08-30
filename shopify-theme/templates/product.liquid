@@ -1,0 +1,476 @@
+<!-- Product/Book Detail Page -->
+<div class="container-custom py-8">
+
+  <!-- Breadcrumb -->
+  <nav class="mb-6" aria-label="Breadcrumb">
+    <ol class="flex items-center space-x-2 text-sm text-gray-600">
+      <li><a href="/" class="hover:text-blue-600">Home</a></li>
+      <li><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg></li>
+      {% for collection in product.collections %}
+        <li><a href="{{ collection.url }}" class="hover:text-blue-600">{{ collection.title }}</a></li>
+        <li><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg></li>
+      {% endfor %}
+      <li class="text-gray-900 font-medium">{{ product.title }}</li>
+    </ol>
+  </nav>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+    <!-- Product Images -->
+    <div class="space-y-4">
+      <!-- Main Image -->
+      <div class="aspect-w-3 aspect-h-4 bg-gray-100 rounded-lg overflow-hidden">
+        {% if product.featured_image %}
+          <img
+            id="main-product-image"
+            src="{{ product.featured_image | image_url: width: 600, height: 800 }}"
+            alt="{{ product.title }}"
+            class="w-full h-full object-cover"
+          >
+        {% else %}
+          <div class="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+            <svg class="w-24 h-24 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Thumbnail Images -->
+      {% if product.images.size > 1 %}
+        <div class="grid grid-cols-4 gap-4">
+          {% for image in product.images %}
+            <button
+              onclick="changeMainImage('{{ image | image_url: width: 600, height: 800 }}')"
+              class="aspect-w-1 aspect-h-1 bg-gray-100 rounded-lg overflow-hidden border-2 {% if forloop.first %}border-blue-500{% else %}border-transparent hover:border-gray-300{% endif %} transition-colors"
+            >
+              <img
+                src="{{ image | image_url: width: 150, height: 150 }}"
+                alt="{{ product.title }} - Image {{ forloop.index }}"
+                class="w-full h-full object-cover"
+              >
+            </button>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Product Information -->
+    <div class="space-y-6">
+
+      <!-- Title and Rating -->
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ product.title }}</h1>
+
+        <!-- Rating -->
+        <div class="flex items-center space-x-2 mb-4">
+          <div class="flex items-center">
+            {% for i in (1..5) %}
+              <svg class="w-5 h-5 {% if i <= 4 %}text-yellow-400{% else %}text-gray-300{% endif %}" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+            {% endfor %}
+          </div>
+          <span class="text-sm text-gray-600">(4.2 out of 5 stars)</span>
+          <span class="text-sm text-gray-500">•</span>
+          <span class="text-sm text-gray-600">12 reviews</span>
+        </div>
+
+        <!-- Tags/Categories -->
+        {% if product.tags %}
+          <div class="flex flex-wrap gap-2 mb-4">
+            {% for tag in product.tags %}
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                {{ tag }}
+              </span>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Price -->
+      <div class="text-4xl font-bold text-gray-900">
+        {{ product.price | money }}
+        {% if product.compare_at_price %}
+          <span class="text-2xl text-gray-500 line-through ml-4">{{ product.compare_at_price | money }}</span>
+          <span class="text-lg text-red-600 font-semibold ml-2">
+            {{ product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round }}% off
+          </span>
+        {% endif %}
+      </div>
+
+      <!-- Product Options -->
+      {% if product.variants.size > 1 %}
+        <div class="space-y-4">
+          {% for option in product.options %}
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                {{ option.name }}
+              </label>
+              <div class="flex flex-wrap gap-2">
+                {% for value in option.values %}
+                  <button
+                    type="button"
+                    class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors"
+                    data-option="{{ option.name }}"
+                    data-value="{{ value }}"
+                  >
+                    {{ value }}
+                  </button>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Quantity Selector -->
+      <div class="flex items-center space-x-4">
+        <label for="quantity" class="text-sm font-medium text-gray-700">Quantity:</label>
+        <div class="flex items-center border border-gray-300 rounded-lg">
+          <button
+            type="button"
+            onclick="updateQuantity(-1)"
+            class="px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+            </svg>
+          </button>
+          <input
+            id="quantity"
+            type="number"
+            min="1"
+            value="1"
+            class="w-16 text-center border-0 focus:ring-0"
+            readonly
+          >
+          <button
+            type="button"
+            onclick="updateQuantity(1)"
+            class="px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Add to Cart / Buy Now -->
+      <div class="space-y-4">
+        {% if product.available %}
+          <div class="flex flex-col sm:flex-row gap-4">
+            <button
+              data-product-id="{{ product.id }}"
+              data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+              data-action="add-to-cart"
+              class="flex-1 bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center"
+            >
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.1 5H19M7 13v8a2 2 0 002 2h10a2 2 0 002-2v-3"></path>
+              </svg>
+              Add to Cart
+            </button>
+            <button class="bg-green-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+              Buy Now
+            </button>
+          </div>
+
+          <!-- Stock Status -->
+          <div class="flex items-center text-sm text-gray-600">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            In stock - Ships within 1-2 business days
+          </div>
+        {% else %}
+          <div class="bg-gray-100 text-gray-800 px-8 py-4 rounded-lg font-semibold text-center">
+            Out of Stock
+          </div>
+
+          <!-- Notify when available -->
+          <div class="text-center">
+            <button class="text-blue-600 hover:text-blue-700 font-medium">
+              Notify me when available
+            </button>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Wishlist -->
+      <div class="flex items-center space-x-4 pt-4 border-t border-gray-200">
+        <button
+          data-product-id="{{ product.id }}"
+          data-wishlist
+          class="flex items-center text-gray-600 hover:text-red-600 transition-colors"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          </svg>
+          Add to Wishlist
+        </button>
+
+        <button class="flex items-center text-gray-600 hover:text-blue-600 transition-colors">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+          </svg>
+          Share
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Description -->
+  <div class="mt-16 grid grid-cols-1 lg:grid-cols-3 gap-12">
+
+    <!-- Main Description -->
+    <div class="lg:col-span-2">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">About This Book</h2>
+
+      <div class="prose prose-lg max-w-none">
+        {{ product.description }}
+      </div>
+
+      <!-- Product Details -->
+      <div class="mt-8 grid grid-cols-2 gap-6">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-3">Product Details</h3>
+          <dl class="space-y-2">
+            <div class="flex justify-between">
+              <dt class="text-gray-600">ISBN:</dt>
+              <dd class="font-medium">{{ product.metafields.custom.isbn | default: 'N/A' }}</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-gray-600">Pages:</dt>
+              <dd class="font-medium">{{ product.metafields.custom.pages | default: 'N/A' }}</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-gray-600">Language:</dt>
+              <dd class="font-medium">{{ product.metafields.custom.language | default: 'English' }}</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-gray-600">Publisher:</dt>
+              <dd class="font-medium">{{ product.metafields.custom.publisher | default: 'N/A' }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-3">Shipping & Returns</h3>
+          <ul class="space-y-2 text-sm text-gray-600">
+            <li>✓ Free shipping on orders over $25</li>
+            <li>✓ 30-day return policy</li>
+            <li>✓ Secure packaging</li>
+            <li>✓ Digital download available</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="space-y-6">
+
+      <!-- Author Info -->
+      {% if product.metafields.custom.author_bio %}
+        <div class="bg-gray-50 rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-3">About the Author</h3>
+          <p class="text-gray-600 text-sm">
+            {{ product.metafields.custom.author_bio }}
+          </p>
+        </div>
+      {% endif %}
+
+      <!-- Related Books -->
+      <div class="bg-white border border-gray-200 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">You Might Also Like</h3>
+        <div class="space-y-4">
+          {% for related_product in product.related_products limit: 3 %}
+            <div class="flex space-x-3">
+              <a href="{{ related_product.url }}" class="flex-shrink-0">
+                {% if related_product.featured_image %}
+                  <img
+                    src="{{ related_product.featured_image | image_url: width: 60, height: 80 }}"
+                    alt="{{ related_product.title }}"
+                    class="w-15 h-20 object-cover rounded"
+                  >
+                {% else %}
+                  <div class="w-15 h-20 bg-gray-200 rounded flex items-center justify-center">
+                    <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                  </div>
+                {% endif %}
+              </a>
+              <div class="flex-1 min-w-0">
+                <h4 class="text-sm font-medium text-gray-900 truncate">
+                  <a href="{{ related_product.url }}" class="hover:text-blue-600">{{ related_product.title }}</a>
+                </h4>
+                <p class="text-sm text-gray-600">{{ related_product.price | money }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Reviews Summary -->
+      <div class="bg-white border border-gray-200 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Customer Reviews</h3>
+        <div class="flex items-center space-x-2 mb-3">
+          <div class="flex items-center">
+            {% for i in (1..5) %}
+              <svg class="w-4 h-4 {% if i <= 4 %}text-yellow-400{% else %}text-gray-300{% endif %}" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+            {% endfor %}
+          </div>
+          <span class="text-sm text-gray-600">4.2 out of 5</span>
+        </div>
+        <p class="text-sm text-gray-600 mb-4">Based on 12 customer reviews</p>
+        <a href="#reviews" class="text-blue-600 hover:text-blue-700 font-medium text-sm">
+          Read all reviews →
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <div id="reviews" class="mt-16">
+    <h2 class="text-2xl font-bold text-gray-900 mb-8">Customer Reviews</h2>
+
+    <!-- Review Form (for logged-in customers) -->
+    {% if customer %}
+      <div class="bg-gray-50 rounded-lg p-6 mb-8">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Write a Review</h3>
+        <form class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+            <div class="flex items-center space-x-1">
+              {% for i in (1..5) %}
+                <button type="button" class="text-gray-300 hover:text-yellow-400 text-xl">★</button>
+              {% endfor %}
+            </div>
+          </div>
+          <div>
+            <label for="review-title" class="block text-sm font-medium text-gray-700 mb-2">Review Title</label>
+            <input type="text" id="review-title" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          </div>
+          <div>
+            <label for="review-content" class="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
+            <textarea id="review-content" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+          </div>
+          <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+            Submit Review
+          </button>
+        </form>
+      </div>
+    {% endif %}
+
+    <!-- Existing Reviews -->
+    <div class="space-y-6">
+      <!-- Sample Review 1 -->
+      <div class="border border-gray-200 rounded-lg p-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0">
+            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+              <span class="text-sm font-medium text-blue-600">JD</span>
+            </div>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center space-x-2 mb-2">
+              <h4 class="text-sm font-medium text-gray-900">John Doe</h4>
+              <div class="flex items-center">
+                {% for i in (1..5) %}
+                  <svg class="w-4 h-4 {% if i <= 4 %}text-yellow-400{% else %}text-gray-300{% endif %}" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                  </svg>
+                {% endfor %}
+              </div>
+              <span class="text-sm text-gray-500">2 weeks ago</span>
+            </div>
+            <h5 class="text-sm font-medium text-gray-900 mb-2">Great book for beginners!</h5>
+            <p class="text-sm text-gray-600">This book provided exactly what I was looking for. The explanations are clear and the examples are practical. Highly recommended for anyone starting out in this field.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sample Review 2 -->
+      <div class="border border-gray-200 rounded-lg p-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0">
+            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+              <span class="text-sm font-medium text-green-600">SM</span>
+            </div>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center space-x-2 mb-2">
+              <h4 class="text-sm font-medium text-gray-900">Sarah Miller</h4>
+              <div class="flex items-center">
+                {% for i in (1..5) %}
+                  <svg class="w-4 h-4 {% if i <= 5 %}text-yellow-400{% else %}text-gray-300{% endif %}" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                  </svg>
+                {% endfor %}
+              </div>
+              <span class="text-sm text-gray-500">1 month ago</span>
+            </div>
+            <h5 class="text-sm font-medium text-gray-900 mb-2">Excellent content and writing</h5>
+            <p class="text-sm text-gray-600">The author has done an amazing job covering all the important topics. The writing style is engaging and easy to follow. Definitely worth the investment.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Image gallery functionality
+function changeMainImage(imageSrc) {
+  const mainImage = document.getElementById('main-product-image');
+  if (mainImage) {
+    mainImage.src = imageSrc;
+  }
+
+  // Update thumbnail selection
+  const thumbnails = document.querySelectorAll('[onclick*="changeMainImage"]');
+  thumbnails.forEach(thumb => {
+    thumb.classList.remove('border-blue-500');
+    thumb.classList.add('border-transparent');
+  });
+
+  event.target.closest('button').classList.remove('border-transparent');
+  event.target.closest('button').classList.add('border-blue-500');
+}
+
+// Quantity selector functionality
+function updateQuantity(change) {
+  const quantityInput = document.getElementById('quantity');
+  if (quantityInput) {
+    const currentValue = parseInt(quantityInput.value) || 1;
+    const newValue = Math.max(1, currentValue + change);
+    quantityInput.value = newValue;
+  }
+}
+
+// Product variant selection
+document.addEventListener('DOMContentLoaded', function() {
+  const optionButtons = document.querySelectorAll('[data-option]');
+  optionButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const optionName = this.dataset.option;
+      const optionValue = this.dataset.value;
+
+      // Update selected state
+      const siblings = document.querySelectorAll(`[data-option="${optionName}"]`);
+      siblings.forEach(sib => sib.classList.remove('border-blue-500', 'text-blue-600'));
+      siblings.forEach(sib => sib.classList.add('border-gray-300', 'text-gray-700'));
+
+      this.classList.remove('border-gray-300', 'text-gray-700');
+      this.classList.add('border-blue-500', 'text-blue-600');
+
+      // Here you would typically update the product variant
+      console.log(`Selected ${optionName}: ${optionValue}`);
+    });
+  });
+});
+</script>

@@ -1,0 +1,206 @@
+<!-- Hero Section - Green Theme -->
+<section class="bg-gradient-to-r from-green-600 to-emerald-700 text-white py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h1 class="text-4xl md:text-6xl font-bold mb-6">
+      Discover Your Next Great Read
+    </h1>
+    <p class="text-xl md:text-2xl mb-8 text-green-100 max-w-3xl mx-auto">
+      {{ settings.store_description }}
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="/collections/all" class="bg-white text-green-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+        Browse Books
+      </a>
+      <a href="#featured" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-green-600 transition-colors">
+        Featured Books
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Books Section -->
+{% if settings.show_featured_books %}
+<section id="featured" class="py-16 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">Featured Books</h2>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        Handpicked selections from our premium collection
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{{ settings.grid_columns }} gap-8">
+      {% for product in collections['featured-books'].products limit: 8 %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          <div class="aspect-w-3 aspect-h-4 bg-gray-200">
+            {% if product.featured_image %}
+              <img src="{{ product.featured_image | image_url: width: 400 }}" alt="{{ product.title }}" class="w-full h-64 object-cover">
+            {% else %}
+              <div class="w-full h-64 bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+                <svg class="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </div>
+            {% endif %}
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">
+              <a href="{{ product.url }}" class="hover:text-blue-600 transition-colors">{{ product.title }}</a>
+            </h3>
+            <p class="text-gray-600 text-sm mb-3 line-clamp-2">
+              {{ product.description | strip_html | truncate: 120 }}
+            </p>
+            <div class="flex items-center justify-between">
+              <div class="text-2xl font-bold text-gray-900">
+                {{ product.price | money }}
+              </div>
+              <a href="{{ product.url }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                View Details
+              </a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="text-center mt-12">
+      <a href="/collections/featured-books" class="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+        View All Featured Books
+      </a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Categories Section -->
+{% if settings.show_categories %}
+<section class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">Browse by Category</h2>
+      <p class="text-lg text-gray-600">
+        Find books in your favorite genres
+      </p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {% for collection in collections %}
+        {% if collection.title != 'Featured Books' and collection.products_count > 0 %}
+          <a href="{{ collection.url }}" class="group">
+            <div class="bg-gray-100 rounded-lg p-6 text-center hover:bg-gray-200 transition-colors">
+              <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 transition-colors">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ collection.title }}</h3>
+              <p class="text-gray-600 text-sm">{{ collection.products_count }} books</p>
+            </div>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Authors Section -->
+{% if settings.show_authors %}
+<section class="py-16 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">Featured Authors</h2>
+      <p class="text-lg text-gray-600">
+        Meet the talented writers behind our books
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for article in blogs['authors'].articles limit: 6 %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          {% if article.image %}
+            <img src="{{ article.image | image_url: width: 400, height: 300 }}" alt="{{ article.title }}" class="w-full h-48 object-cover">
+          {% else %}
+            <div class="w-full h-48 bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
+              <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+            </div>
+          {% endif %}
+          <div class="p-6">
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">
+              <a href="{{ article.url }}" class="hover:text-blue-600 transition-colors">{{ article.title }}</a>
+            </h3>
+            <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+              {{ article.excerpt | strip_html | truncate: 150 }}
+            </p>
+            <a href="{{ article.url }}" class="text-blue-600 hover:text-blue-700 font-medium text-sm">
+              Read Bio →
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="text-center mt-12">
+      <a href="/blogs/authors" class="bg-emerald-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors">
+        Meet All Authors
+      </a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Newsletter Section - Green Theme -->
+<section class="py-16 bg-green-600 text-white">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h2 class="text-3xl font-bold mb-4">Stay Updated</h2>
+    <p class="text-xl mb-8 text-green-100">
+      Get notified about new releases and special offers
+    </p>
+
+    <div class="max-w-md mx-auto">
+      {% form 'customer', id: 'newsletter-form' %}
+        <div class="flex flex-col sm:flex-row gap-4">
+          <input
+            type="email"
+            name="contact[email]"
+            placeholder="Enter your email"
+            class="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:ring-2 focus:ring-white focus:outline-none"
+            required
+          >
+          <button
+            type="submit"
+            class="bg-white text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+          >
+            Subscribe
+          </button>
+        </div>
+      {% endform %}
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div>
+        <div class="text-4xl font-bold text-blue-600 mb-2">{{ collections.all.products_count }}</div>
+        <div class="text-gray-600">Books Available</div>
+      </div>
+      <div>
+        <div class="text-4xl font-bold text-purple-600 mb-2">{{ collections | size }}</div>
+        <div class="text-gray-600">Categories</div>
+      </div>
+      <div>
+        <div class="text-4xl font-bold text-green-600 mb-2">{{ shop.customer_accounts_enabled ? '1000+' : '500+' }}</div>
+        <div class="text-gray-600">Happy Readers</div>
+      </div>
+      <div>
+        <div class="text-4xl font-bold text-orange-600 mb-2">4.8</div>
+        <div class="text-gray-600">Average Rating</div>
+      </div>
+    </div>
+  </div>
+</section>

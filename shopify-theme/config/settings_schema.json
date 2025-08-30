@@ -1,0 +1,101 @@
+[
+  {
+    "name": "Ebook Store Settings",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Store Information"
+      },
+      {
+        "type": "text",
+        "id": "store_name",
+        "label": "Store Name",
+        "default": "Buis Buz"
+      },
+      {
+        "type": "textarea",
+        "id": "store_description",
+        "label": "Store Description",
+        "default": "Discover your next great read with our premium ebook collection."
+      },
+      {
+        "type": "header",
+        "content": "Theme Colors"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color",
+        "default": "#F8F9FA"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text Color",
+        "default": "#212529"
+      },
+      {
+        "type": "color",
+        "id": "primary_color",
+        "label": "Primary Green",
+        "default": "#28A745"
+      },
+      {
+        "type": "color",
+        "id": "secondary_color",
+        "label": "Secondary Green",
+        "default": "#218838"
+      },
+      {
+        "type": "header",
+        "content": "Typography"
+      },
+      {
+        "type": "font_picker",
+        "id": "heading_font",
+        "label": "Heading Font",
+        "default": "serif"
+      },
+      {
+        "type": "font_picker",
+        "id": "body_font",
+        "label": "Body Font",
+        "default": "sans-serif"
+      },
+      {
+        "type": "header",
+        "content": "Layout"
+      },
+      {
+        "type": "select",
+        "id": "grid_columns",
+        "label": "Product Grid Columns",
+        "options": [
+          { "value": "2", "label": "2 columns" },
+          { "value": "3", "label": "3 columns" },
+          { "value": "4", "label": "4 columns" },
+          { "value": "5", "label": "5 columns" }
+        ],
+        "default": "4"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_featured_books",
+        "label": "Show Featured Books Section",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_categories",
+        "label": "Show Categories Navigation",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_authors",
+        "label": "Show Authors Section",
+        "default": true
+      }
+    ]
+  }
+]

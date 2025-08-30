@@ -1,0 +1,36 @@
+<section class="categories">
+  <div class="container">
+    <h2>{{ section.settings.title }}</h2>
+    <div class="categories-grid">
+      {% for collection in collections %}
+        {% if collection.products_count > 0 %}
+          <div class="category-card">
+            <a href="{{ collection.url }}">
+              {% if collection.image %}
+                {{ collection.image | image_url: width: 300 | image_tag }}
+              {% else %}
+                <div class="placeholder-image">{{ collection.title | truncate: 1 }}</div>
+              {% endif %}
+              <h3>{{ collection.title }}</h3>
+              <p>{{ collection.products_count }} ebooks</p>
+            </a>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Ebook Categories",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Browse Categories"
+    }
+  ]
+}
+{% endschema %}

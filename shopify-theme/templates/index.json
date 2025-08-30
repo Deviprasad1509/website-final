@@ -1,0 +1,40 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "title": "Welcome to Buis Buz",
+        "subtitle": "Discover your next great read with our premium ebook collection.",
+        "button_text": "Browse Books",
+        "button_link": "/collections/all"
+      }
+    },
+    "all-products": {
+      "type": "featured-products",
+      "settings": {
+        "title": "Our Ebooks Collection"
+      }
+    },
+    "categories": {
+      "type": "categories",
+      "settings": {
+        "title": "Browse Categories"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "title": "Stay Updated",
+        "subtitle": "Subscribe to our newsletter for the latest ebook releases and exclusive offers.",
+        "placeholder": "Enter your email",
+        "button_text": "Subscribe"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "all-products",
+    "categories",
+    "newsletter"
+  ]
+}
