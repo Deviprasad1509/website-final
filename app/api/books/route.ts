@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { listBooks, createBook, requireAuth } from '@/lib/server-functions'
 import { bookSchema } from '@/types/db'

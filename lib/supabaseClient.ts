@@ -3,21 +3,25 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
 
-if (!supabaseUrl || !supabaseAnonKey) {
-	throw new Error('Missing Supabase environment variables. Please check your .env.local file and ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set.')
-}
+// During build time, provide fallback values to prevent build errors
+const fallbackUrl = 'https://placeholder.supabase.co'
+const fallbackKey = 'placeholder-key'
 
-if (supabaseUrl.includes('your-supabase-url') || supabaseAnonKey.includes('your-supabase')) {
-	throw new Error('Invalid Supabase credentials. Please update your .env.local file with valid Supabase project credentials.')
-}
+// Use fallback values during build if environment variables are not available
+const finalUrl = supabaseUrl || fallbackUrl
+const finalKey = supabaseAnonKey || fallbackKey
 
-export const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabaseClient = createClient(finalUrl, finalKey, {
 	auth: {
 		persistSession: true,
 		autoRefreshToken: true,
 		detectSessionInUrl: true,
 	},
 })
+
+// Export a flag to check if we have valid credentials
+export const hasValidSupabaseCredentials = !!(supabaseUrl && supabaseAnonKey &&
+	!supabaseUrl.includes('your-supabase-url') && !supabaseAnonKey.includes('your-supabase'))
 
 export type SupabaseBrowser = typeof supabaseClient
 

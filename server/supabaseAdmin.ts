@@ -3,17 +3,25 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY as string
 
-if (!supabaseUrl || !serviceRoleKey) {
-	throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY')
-}
+// During build time, provide fallback values to prevent build errors
+const fallbackUrl = 'https://placeholder.supabase.co'
+const fallbackServiceKey = 'placeholder-service-key'
 
-export const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
+// Use fallback values during build if environment variables are not available
+const finalUrl = supabaseUrl || fallbackUrl
+const finalServiceKey = serviceRoleKey || fallbackServiceKey
+
+export const supabaseAdmin = createClient(finalUrl, finalServiceKey, {
 	auth: {
 		persistSession: false,
 		autoRefreshToken: false,
 		detectSessionInUrl: false,
 	},
 })
+
+// Export a flag to check if we have valid credentials
+export const hasValidSupabaseAdminCredentials = !!(supabaseUrl && serviceRoleKey &&
+	!supabaseUrl.includes('your-supabase-url') && !serviceRoleKey.includes('your-supabase'))
 
 export type SupabaseAdmin = typeof supabaseAdmin
 

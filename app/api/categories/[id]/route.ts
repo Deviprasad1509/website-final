@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { getCategory, updateCategory, deleteCategory } from '../../../../server/categories'
 import { requireAdmin } from '../../../../server/auth'

@@ -13,17 +13,7 @@ interface BooksPageProps {
 	}
 }
 
-export async function generateStaticParams() {
-  const categories = await getCategories()
-  const staticPaths = categories.map(category => ({
-    searchParams: { category: category.id }
-  }))
-
-  // Add default path
-  staticPaths.push({ searchParams: { category: undefined } })
-  
-  return staticPaths
-}
+export const dynamic = 'force-dynamic'
 
 export default async function BooksPage({ searchParams }: BooksPageProps) {
   const [books, categories] = await Promise.all([

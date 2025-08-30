@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { listCategories, createCategory, requireAdmin } from '@/lib/server-functions'
 import { categorySchema } from '@/types/db'

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { listAuthors, createAuthor, requireAdmin } from '@/lib/server-functions'
 import { authorSchema } from '@/types/db'
