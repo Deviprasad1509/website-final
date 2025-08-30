@@ -3,22 +3,33 @@ import { supabaseClient } from './supabaseClient'
 import { bookSchema, Book, paginationQuerySchema, userProfileSchema, UserProfile, categorySchema, Category, authorSchema, Author, reviewSchema, Review, orderSchema, Order, librarySchema, Library } from '../types/db'
 import { createClient } from '@supabase/supabase-js'
 
-// Admin client for server operations
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY as string
+// Lazy-loaded admin client for server operations
+let supabaseAdmin: ReturnType<typeof createClient> | null = null
 
-const supabaseAdmin = serviceRoleKey ? createClient(supabaseUrl, serviceRoleKey, {
-	auth: {
-		persistSession: false,
-		autoRefreshToken: false,
-		detectSessionInUrl: false,
-	},
-}) : supabaseClient
+function getSupabaseAdmin() {
+	if (!supabaseAdmin) {
+		const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+		const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+		if (!supabaseUrl || !serviceRoleKey) {
+			throw new Error('Missing Supabase environment variables')
+		}
+
+		supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
+			auth: {
+				persistSession: false,
+				autoRefreshToken: false,
+				detectSessionInUrl: false,
+			},
+		})
+	}
+	return supabaseAdmin
+}
 
 // Books
 export async function listBooks(params: Partial<z.infer<typeof paginationQuerySchema>> = {}) {
 	const { q, category, sort, limit = 20, cursor } = paginationQuerySchema.partial().parse(params)
-	let query = supabaseAdmin.from('books').select('*, authors(*), categories(*)')
+	let query = getSupabaseAdmin().from('books').select('*, authors(*), categories(*)')
 	if (q) {
 		query = query.ilike('title', `%${q}%`)
 	}
@@ -54,37 +65,37 @@ export async function listBooks(params: Partial<z.infer<typeof paginationQuerySc
 }
 
 export async function getBook(id: string): Promise<Book | null> {
-	const { data, error } = await supabaseAdmin.from('books').select('*, authors(*), categories(*)').eq('id', id).single()
+	const { data, error } = await getSupabaseAdmin().from('books').select('*, authors(*), categories(*)').eq('id', id).single()
 	if (error) return null
 	return bookSchema.parse(data)
 }
 
 export async function createBook(input: Omit<Book, 'id' | 'created_at'>): Promise<Book> {
-	const { data, error } = await supabaseAdmin.from('books').insert(input).select('*').single()
+	const { data, error } = await getSupabaseAdmin().from('books').insert(input as any).select('*').single()
 	if (error) throw error
 	return bookSchema.parse(data)
 }
 
 export async function updateBook(id: string, patch: Partial<Omit<Book, 'id'>>): Promise<Book> {
-	const { data, error } = await supabaseAdmin.from('books').update(patch).eq('id', id).select('*').single()
+	const { data, error } = await (getSupabaseAdmin() as any).from('books').update(patch).eq('id', id).select('*').single()
 	if (error) throw error
 	return bookSchema.parse(data)
 }
 
 export async function deleteBook(id: string) {
-	const { error } = await supabaseAdmin.from('books').delete().eq('id', id)
+	const { error } = await getSupabaseAdmin().from('books').delete().eq('id', id)
 	if (error) throw error
 }
 
 // Library
 export async function hasAccess(userId: string, bookId: string): Promise<boolean> {
-	const { data, error } = await supabaseAdmin.from('library').select('id').eq('user_id', userId).eq('book_id', bookId).single()
+	const { data, error } = await getSupabaseAdmin().from('library').select('id').eq('user_id', userId).eq('book_id', bookId).single()
 	if (error) return false
 	return !!data
 }
 
 export async function listMyLibrary(userId: string): Promise<Library[]> {
-	const { data, error } = await supabaseAdmin.from('library').select('*, books(*, authors(*), categories(*))').eq('user_id', userId).order('created_at', { ascending: false })
+	const { data, error } = await getSupabaseAdmin().from('library').select('*, books(*, authors(*), categories(*))').eq('user_id', userId).order('created_at', { ascending: false })
 	if (error) throw error
 	return (data ?? []).map(l => librarySchema.parse(l))
 }
@@ -92,14 +103,14 @@ export async function listMyLibrary(userId: string): Promise<Library[]> {
 // Auth
 export async function getSessionUser(): Promise<UserProfile | null> {
 	try {
-		const { data } = await supabaseAdmin.auth.getUser()
+		const { data } = await getSupabaseAdmin().auth.getUser()
 		const authUser = data.user
 		if (!authUser) return null
-		const { data: profile } = await supabaseAdmin.from('profiles').select('*').eq('id', authUser.id).single()
+		const { data: profile } = await getSupabaseAdmin().from('profiles').select('*').eq('id', authUser.id).single()
 		if (!profile) return null
 		// Combine profile with auth user data
 		const userProfile = {
-			...profile,
+			...(profile as any),
 			email: authUser.email,
 			name: authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'User'
 		}
@@ -122,7 +133,7 @@ export async function requireAdmin(): Promise<UserProfile> {
 }
 
 export async function signUp(email: string, password: string, name: string) {
-	const { data: authData, error } = await supabaseAdmin.auth.signUp({
+	const { data: authData, error } = await getSupabaseAdmin().auth.signUp({
 		email,
 		password,
 		options: { data: { name } }
@@ -131,7 +142,7 @@ export async function signUp(email: string, password: string, name: string) {
 	const authUser = authData.user
 	if (!authUser) throw new Error('Signup failed')
 	// Profile will be created by the trigger, but we can ensure it exists
-	await supabaseAdmin.from('profiles').upsert({
+	await (getSupabaseAdmin() as any).from('profiles').upsert({
 		id: authUser.id,
 		role: 'user'
 	}, { onConflict: 'id' })
@@ -139,84 +150,84 @@ export async function signUp(email: string, password: string, name: string) {
 }
 
 export async function signIn(email: string, password: string) {
-	const { data, error } = await supabaseAdmin.auth.signInWithPassword({ email, password })
+	const { data, error } = await getSupabaseAdmin().auth.signInWithPassword({ email, password })
 	if (error) throw error
 	return { session: data.session }
 }
 
 export async function signOut() {
-	await supabaseAdmin.auth.signOut()
+	await getSupabaseAdmin().auth.signOut()
 }
 
 // Categories
 export async function listCategories() {
-	const { data, error } = await supabaseAdmin.from('categories').select('*').order('name', { ascending: true })
+	const { data, error } = await getSupabaseAdmin().from('categories').select('*').order('name', { ascending: true })
 	if (error) throw error
 	return data ?? []
 }
 
 export async function createCategory(input: Omit<Category, 'id' | 'created_at'>): Promise<Category> {
-	const { data, error } = await supabaseAdmin.from('categories').insert(input).select('*').single()
+	const { data, error } = await (getSupabaseAdmin() as any).from('categories').insert(input).select('*').single()
 	if (error) throw error
 	return categorySchema.parse(data)
 }
 
 export async function getCategory(id: string): Promise<Category | null> {
-	const { data, error } = await supabaseAdmin.from('categories').select('*').eq('id', id).single()
+	const { data, error } = await getSupabaseAdmin().from('categories').select('*').eq('id', id).single()
 	if (error) return null
 	return categorySchema.parse(data)
 }
 
 export async function updateCategory(id: string, patch: Partial<Omit<Category, 'id'>>): Promise<Category> {
-	const { data, error } = await supabaseAdmin.from('categories').update(patch).eq('id', id).select('*').single()
+	const { data, error } = await (getSupabaseAdmin() as any).from('categories').update(patch).eq('id', id).select('*').single()
 	if (error) throw error
 	return categorySchema.parse(data)
 }
 
 export async function deleteCategory(id: string) {
-	const { error } = await supabaseAdmin.from('categories').delete().eq('id', id)
+	const { error } = await getSupabaseAdmin().from('categories').delete().eq('id', id)
 	if (error) throw error
 }
 
 // Authors
 export async function listAuthors() {
-	const { data, error } = await supabaseAdmin.from('authors').select('*').order('name', { ascending: true })
+	const { data, error } = await getSupabaseAdmin().from('authors').select('*').order('name', { ascending: true })
 	if (error) throw error
 	return data ?? []
 }
 
 export async function createAuthor(input: Omit<Author, 'id' | 'created_at'>): Promise<Author> {
-	const { data, error } = await supabaseAdmin.from('authors').insert(input).select('*').single()
+	const { data, error } = await (getSupabaseAdmin() as any).from('authors').insert(input).select('*').single()
 	if (error) throw error
 	return authorSchema.parse(data)
 }
 
 export async function getAuthor(id: string): Promise<Author | null> {
-	const { data, error } = await supabaseAdmin.from('authors').select('*').eq('id', id).single()
+	const { data, error } = await getSupabaseAdmin().from('authors').select('*').eq('id', id).single()
 	if (error) return null
 	return authorSchema.parse(data)
 }
 
 export async function updateAuthor(id: string, patch: Partial<Omit<Author, 'id'>>): Promise<Author> {
-	const { data, error } = await supabaseAdmin.from('authors').update(patch).eq('id', id).select('*').single()
+	const { data, error } = await (getSupabaseAdmin() as any).from('authors').update(patch).eq('id', id).select('*').single()
 	if (error) throw error
 	return authorSchema.parse(data)
 }
 
 export async function deleteAuthor(id: string) {
-	const { error } = await supabaseAdmin.from('authors').delete().eq('id', id)
+	const { error } = await getSupabaseAdmin().from('authors').delete().eq('id', id)
 	if (error) throw error
 }
 
 // Reviews
 export async function listReviewsByBook(bookId: string): Promise<Review[]> {
-	const { data, error } = await supabaseAdmin.from('reviews').select('*').eq('book_id', bookId).order('created_at', { ascending: false })
+	const { data, error } = await getSupabaseAdmin().from('reviews').select('*').eq('book_id', bookId).order('created_at', { ascending: false })
 	if (error) throw error
 	return (data ?? []).map(r => reviewSchema.parse(r))
 }
 
 export async function upsertReview(input: Omit<Review, 'id' | 'created_at'>): Promise<Review> {
-	const { data, error } = await supabaseAdmin.from('reviews').upsert(input).select('*').single()
+	const { data, error } = await (getSupabaseAdmin() as any).from('reviews').upsert(input).select('*').single()
 	if (error) throw error
 	return reviewSchema.parse(data)
 }
