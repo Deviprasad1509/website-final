@@ -1,7 +1,5 @@
 "use client"
 
-export const dynamic = 'force-dynamic'
-
 import { useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Header from "@/components/header"
@@ -9,11 +7,24 @@ import { OrderHistory } from "@/components/order-history"
 import { OrderDetail } from "@/components/order-detail"
 import { useAuth } from "@/lib/auth-context"
 
+export const dynamic = 'force-dynamic'
+
 function OrdersPageInner() {
-  const { state } = useAuth()
-  const router = useRouter()
-  const params = useSearchParams()
-  const orderId = params.get('orderId') || ""
+  let state
+  let router
+  let params
+  let orderId
+
+  try {
+    const auth = useAuth()
+    state = auth.state
+    router = useRouter()
+    params = useSearchParams()
+    orderId = params.get('orderId') || ""
+  } catch (error) {
+    // During prerendering, useAuth will throw
+    return <div>Loading...</div>
+  }
 
   useEffect(() => {
     if (!state.isAuthenticated && !state.isLoading) {

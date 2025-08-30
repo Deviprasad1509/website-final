@@ -1,16 +1,25 @@
 "use client"
 
-export const dynamic = 'force-dynamic'
-
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Header from "@/components/header"
 import { UserProfile } from "@/components/user-profile"
 import { useAuth } from "@/lib/auth-context"
 
+export const dynamic = 'force-dynamic'
+
 export default function AccountPage() {
-  const { state } = useAuth()
-  const router = useRouter()
+  let state
+  let router
+
+  try {
+    const auth = useAuth()
+    state = auth.state
+    router = useRouter()
+  } catch (error) {
+    // During prerendering, useAuth will throw
+    return <div>Loading...</div>
+  }
 
   useEffect(() => {
     if (!state.isAuthenticated && !state.isLoading) {

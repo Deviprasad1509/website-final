@@ -1,7 +1,5 @@
 "use client"
 
-export const dynamic = 'force-dynamic'
-
 import { useState, useEffect } from "react"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
@@ -17,6 +15,8 @@ import Link from "next/link"
 import { useAuth } from "@/lib/auth-context"
 import { db } from "@/lib/database.service"
 import { toast } from "sonner"
+
+export const dynamic = 'force-dynamic'
 
 interface LibraryBook {
   id: string
@@ -39,7 +39,15 @@ export default function LibraryPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [sortBy, setSortBy] = useState<string>("recent")
 
-  const { state: authState } = useAuth()
+  let authState
+
+  try {
+    const auth = useAuth()
+    authState = auth.state
+  } catch (error) {
+    // During prerendering, useAuth will throw
+    return <div>Loading...</div>
+  }
 
   useEffect(() => {
     if (authState.isAuthenticated && authState.user) {
