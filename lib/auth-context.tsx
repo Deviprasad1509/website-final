@@ -1,8 +1,13 @@
 "use client"
 
 import { createContext, useContext, useReducer, useEffect, ReactNode } from "react"
-import { supabaseClient as supabase } from "./supabaseClient"
+import { createBrowserClient } from "@supabase/ssr"
 import { User } from "@supabase/supabase-js"
+
+const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 interface AuthUser {
   id: string

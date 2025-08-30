@@ -4,32 +4,19 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from './ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
-import { supabaseClient } from '@/lib/supabaseClient'
-import { useEffect, useState } from 'react'
-
-interface User {
-  id: string
-  email?: string
-}
+import { useAuth } from '@/lib/auth-context'
 
 export default function Header() {
   const pathname = usePathname()
-  const [user, setUser] = useState<User | null>(null)
-  useEffect(() => {
-    async function getUser() {
-      const { data: { session } } = await supabaseClient.auth.getSession()
-      setUser(session?.user || null)
-    }
-    getUser()
+  let state
 
-    const { data: { subscription } } = supabaseClient.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null)
-    })
-
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
+  try {
+    const auth = useAuth()
+    state = auth.state
+  } catch (error) {
+    // During static generation, useAuth might not be available
+    state = { isAuthenticated: false, user: null, isLoading: true }
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
@@ -62,15 +49,15 @@ export default function Header() {
           </div>
 
           <div className="flex items-center space-x-6">
-            {user ? (
+            {state.isAuthenticated && state.user ? (
               <>
-                <Link 
+                <Link
                   href="/library"
                   className={`hover:text-primary transition-colors ${pathname === '/library' ? 'text-primary font-medium' : ''}`}
                 >
                   My Library
                 </Link>
-                <Link 
+                <Link
                   href="/orders"
                   className={`hover:text-primary transition-colors ${pathname === '/orders' ? 'text-primary font-medium' : ''}`}
                 >
@@ -80,7 +67,7 @@ export default function Header() {
                   <Avatar>
                     <AvatarImage src="" />
                     <AvatarFallback>
-                      {user.email?.charAt(0).toUpperCase() || 'U'}
+                      {state.user.email?.charAt(0).toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
                 </Link>

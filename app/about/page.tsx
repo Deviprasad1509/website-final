@@ -57,6 +57,8 @@ const values = [
   }
 ]
 
+export const dynamic = 'force-dynamic'
+
 export default function AboutPage() {
   return (
     <div className="min-h-screen">

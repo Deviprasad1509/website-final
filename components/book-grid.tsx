@@ -64,7 +64,7 @@ function BookGrid({ books }: BookGridProps) {
             <Card className="overflow-hidden h-full hover:shadow-lg transition-shadow">
               <div className="aspect-[2/3] relative">
                 <Image
-                  src={book.cover_url || '/placeholder.jpg'}
+                  src={(book as any).cover_image || book.cover_url || '/placeholder.jpg'}
                   alt={book.title}
                   fill
                   className="object-cover"
@@ -72,7 +72,7 @@ function BookGrid({ books }: BookGridProps) {
               </div>
               <CardContent className="p-4">
                 <h3 className="font-semibold truncate">{book.title}</h3>
-                <p className="text-sm text-muted-foreground">By {book.authors?.name || 'Unknown Author'}</p>
+                <p className="text-sm text-muted-foreground">By {(book as any).author || book.authors?.name || 'Unknown Author'}</p>
                 <div className="mt-2 flex justify-between items-center">
                   <span className="font-medium">${book.price.toFixed(2)}</span>
                   <Button variant="secondary" size="sm">View Details</Button>

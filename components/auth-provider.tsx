@@ -2,8 +2,13 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect } from 'react'
-import { supabaseClient } from '@/lib/supabaseClient'
+import { createBrowserClient } from '@supabase/ssr'
 import { User } from '@supabase/supabase-js'
+
+const supabaseClient = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 interface AuthContextType {
   user: User | null

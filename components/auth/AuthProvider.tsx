@@ -38,12 +38,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (initialSession?.user) {
         // Get user role
         supabase
-          .from('profiles')
+          .from('users')
           .select('role')
           .eq('id', initialSession.user.id)
           .single()
-          .then(({ data: profile }) => {
-            setUserRole(profile?.role ?? null)
+          .then(({ data: user }) => {
+            setUserRole(user?.role ?? null)
           })
       }
       setIsLoading(false)
@@ -56,12 +56,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(newSession?.user ?? null)
 
         if (newSession?.user) {
-          const { data: profile } = await supabase
-            .from('profiles')
+          const { data: user } = await supabase
+            .from('users')
             .select('role')
             .eq('id', newSession.user.id)
             .single()
-          setUserRole(profile?.role ?? null)
+          setUserRole(user?.role ?? null)
         } else {
           setUserRole(null)
         }

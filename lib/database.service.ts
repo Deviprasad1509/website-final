@@ -1,5 +1,10 @@
-import { supabaseClient } from './supabaseClient'
+import { createBrowserClient } from '@supabase/ssr'
 import { Book, Category, Author } from '../types/db'
+
+const supabaseClient = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 class DatabaseService {
   // Books

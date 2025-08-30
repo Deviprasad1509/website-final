@@ -4,6 +4,8 @@ import FeaturedBooks from '@/components/featured-books'
 import Stats from '@/components/stats'
 import Newsletter from '@/components/newsletter'
 
+export const dynamic = 'force-dynamic'
+
 export default function HomePage() {
 	return (
 		<main className="min-h-screen">

@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { AuthProvider } from "@/components/auth-provider";
+import { CartProvider } from "@/lib/cart-context";
 import { Roboto } from "next/font/google";
-import { SupabaseProvider } from "@/lib/supabase/provider";
 
 const roboto = Roboto({
   weight: ['400', '700'],
@@ -21,13 +21,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={roboto.className}>
-        <SupabaseProvider>
+        <CartProvider>
           <AuthProvider>
             <Header />
             <main>{children}</main>
             <Footer />
           </AuthProvider>
-        </SupabaseProvider>
+        </CartProvider>
       </body>
     </html>
   );

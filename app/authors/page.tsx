@@ -19,6 +19,8 @@ interface AuthorData {
   books: any[]
 }
 
+export const dynamic = 'force-dynamic'
+
 export default function AuthorsPage() {
   const [authors, setAuthors] = useState<AuthorData[]>([])
   const [filteredAuthors, setFilteredAuthors] = useState<AuthorData[]>([])

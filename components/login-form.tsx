@@ -1,52 +1,47 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useSupabase } from '@/lib/supabase/provider'
+import { useAuth } from '@/lib/auth-context'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { AlertCircle, Loader2 } from 'lucide-react'
 
 export default function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { supabase } = useSupabase()
+  const { state, signIn } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (state.isAuthenticated && !state.isLoading) {
+      const redirectTo = searchParams.get('redirectTo') || '/library'
+      router.replace(redirectTo)
+    }
+  }, [state.isAuthenticated, state.isLoading, router, searchParams])
+
   const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setError(null)
     setIsLoading(true)
-    
+
     try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+      await signIn(email, password)
 
-      if (signInError) {
-        setError(signInError.message)
-        return
-      }
-
-      if (data.user) {
-        // Get user's role from profiles table
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', data.user.id)
-          .single()
-
-        if (profileError) {
-          console.error('Error fetching profile:', profileError)
+      // Wait a moment for auth state to update
+      setTimeout(() => {
+        if (state.isAuthenticated) {
+          const redirectTo = searchParams.get('redirectTo') || '/library'
+          router.replace(redirectTo)
         }
+      }, 1000)
 
-        // Get the redirect URL from query params or use default
-        const redirectTo = searchParams.get('redirectTo') || (profile?.role === 'admin' ? '/admin' : '/library')
-        
-        await router.refresh() // Refresh to update auth state
-        await router.replace(redirectTo)
-      }
     } catch (err: any) {
       console.error('Sign in error:', err)
 
@@ -65,68 +60,88 @@ export default function LoginForm() {
     }
   }
 
+  // Show loading if auth state is loading
+  if (state.isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-lg">
-        <h1 className="text-center text-2xl font-bold text-primary sm:text-3xl">Get started today</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center">Welcome back</CardTitle>
+          <p className="text-muted-foreground text-center">
+            Sign in to your account to continue
+          </p>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSignIn} className="space-y-4">
+            {error && (
+              <div className="flex items-center space-x-2 p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+                <AlertCircle className="h-4 w-4" />
+                <span>{error}</span>
+              </div>
+            )}
 
-        <p className="mx-auto mt-4 max-w-md text-center text-muted-foreground">
-          Welcome back! Please enter your details.
-        </p>
-
-        <form onSubmit={handleSignIn} className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8 bg-card">
-          <p className="text-center text-lg font-medium">Sign in to your account</p>
-
-          {error && <p className="text-red-500 text-center">{error}</p>}
-
-          <div>
-            <label htmlFor="email" className="sr-only">Email</label>
-
-            <div className="relative">
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
                 type="email"
-                name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-lg border-border p-4 pe-12 text-sm shadow-sm bg-background text-foreground"
-                placeholder="Enter email"
+                placeholder="Enter your email"
                 disabled={isLoading}
                 required
               />
             </div>
-          </div>
 
-          <div>
-            <label htmlFor="password" className="sr-only">Password</label>
-
-            <div className="relative">
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
                 type="password"
-                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-lg border-border p-4 pe-12 text-sm shadow-sm bg-background text-foreground"
-                placeholder="Enter password"
+                placeholder="Enter your password"
                 disabled={isLoading}
                 required
               />
             </div>
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                'Sign in'
+              )}
+            </Button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-muted-foreground">
+              Don't have an account?{' '}
+              <a href="/signup" className="font-medium text-primary hover:underline">
+                Sign up
+              </a>
+            </p>
           </div>
-
-          <button
-            type="submit"
-            className="block w-full rounded-lg bg-primary px-5 py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Signing in...' : 'Sign in'}
-          </button>
-
-          <p className="text-center text-sm text-muted-foreground">
-            No account?
-            <a className="underline" href="/signup"> Sign up</a>
-          </p>
-        </form>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
